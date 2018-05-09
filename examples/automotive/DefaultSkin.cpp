@@ -159,7 +159,7 @@ void DefaultSkin::initHints()
                                                        m_palette->color2, m_palette->color1 ) );
 //    setBoxBorderColors( Speedometer::NeedleHead, m_palette->color4 );
 
-    setMetric( Speedometer::Needle | QskAspect::MinimumWidth, 2 );
+    setMetric( Speedometer::Needle | QskAspect::MinimumWidth, 10 );
     setMetric( Speedometer::Needle | QskAspect::Margin, 10 );
     setColor( Speedometer::Needle, m_palette->color2 );
 

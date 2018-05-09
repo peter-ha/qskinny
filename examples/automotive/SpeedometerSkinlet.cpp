@@ -11,30 +11,107 @@
 
 #include <QFontMetrics>
 #include <QSGFlatColorMaterial>
+#include <QSGSimpleMaterialShader>
 #include <QtMath>
 
 namespace
 {
+    struct State
+    {
+        QColor color;
+
+        int compare(const State *other) const
+        {
+            uint rgb = color.rgba();
+            uint otherRgb = other->color.rgba();
+
+            if (rgb == otherRgb) {
+                return 0;
+            } else if (rgb < otherRgb) {
+                return -1;
+            } else {
+                return 1;
+            }
+        }
+    };
+
+    class Shader : public QSGSimpleMaterialShader<State>
+    {
+        QSG_DECLARE_SIMPLE_COMPARABLE_SHADER(Shader, State)
+        public:
+
+        const char *vertexShader() const override
+        {
+            return
+                    "attribute highp vec4 aVertex;                              \n"
+                    "attribute highp vec2 aTexCoord;                            \n"
+                    "uniform highp mat4 qt_Matrix;                              \n"
+                    "varying highp vec2 texCoord;                               \n"
+                    "void main() {                                              \n"
+                    "    gl_Position = qt_Matrix * aVertex;                     \n"
+                    "    texCoord = aTexCoord;                                  \n"
+                    "}";
+        }
+
+        const char *fragmentShader() const override
+        {
+            return
+                    "uniform lowp float qt_Opacity;                             \n"
+                    "uniform lowp vec4 color;                                   \n"
+                    "varying highp vec2 texCoord;                               \n"
+                    "uniform vec2 resolution; uniform float time; \n"
+                    "void main ()                                               \n"
+                    "{                                                          \n"
+                    "    vec2 coords = texCoord; \n"
+                    "    vec2 uv = ( gl_FragCoord.xy / resolution.xy ); \n"
+                    "    vec3 finalColor = vec3 ( 0., 1., 0. ); \n"
+                    "    gl_FragColor = vec4( finalColor,  texCoord.x * qt_Opacity ); \n"
+                    "}";
+        }
+
+        QList<QByteArray> attributes() const override
+        {
+            return QList<QByteArray>() << "aVertex" << "aTexCoord";
+        }
+
+        void updateState( const State *state, const State * ) override
+        {
+            program()->setUniformValue( id_color, state->color );
+        }
+
+        void resolveUniforms() override
+        {
+            id_color = program()->uniformLocation( "color" );
+        }
+
+    private:
+        int id_color;
+    };
+
+
+
     class TicksNode : public QSGGeometryNode
     {
         public:
             TicksNode():
-                m_geometry( QSGGeometry::defaultAttributes_Point2D(), 0 )
+                m_geometry(QSGGeometry::defaultAttributes_TexturedPoint2D(), 4)
             {
                 m_geometry.setDrawingMode( GL_LINES );
-                m_geometry.setVertexDataPattern( QSGGeometry::StaticPattern );
 
                 setGeometry( &m_geometry );
-                setMaterial( &m_material );
+
+                QSGSimpleMaterial<State> *material = Shader::createMaterial();
+                material->setFlag( QSGMaterial::Blending );
+                setMaterial( material );
+                setFlag( OwnsMaterial );
             }
 
             void setColor( const QColor& color )
             {
-                m_material.setColor( color );
+                static_cast<QSGSimpleMaterial<State>*>( material() )->state()->color = color;
             }
 
         private:
-            QSGFlatColorMaterial m_material;
             QSGGeometry m_geometry;
     };
 } // namespace
@@ -124,7 +201,7 @@ QSGNode* SpeedometerSkinlet::updateLabelsNode( const Speedometer* speedometer, Q
     auto geometry = ticksNode->geometry();
     geometry->allocate( labelsCount * 2 );
 
-    auto vertexData = geometry->vertexDataAsPoint2D();
+    auto vertexData = geometry->vertexDataAsTexturedPoint2D();
     memset( vertexData, 0, static_cast< size_t >( geometry->vertexCount() ) );
 
     QMarginsF panelMargins = speedometer->marginsHint( Speedometer::Panel | QskAspect::Margin );
@@ -155,8 +232,8 @@ QSGNode* SpeedometerSkinlet::updateLabelsNode( const Speedometer* speedometer, Q
         auto xEnd = center.x() + ( radius - length ) * cosine;
         auto yEnd = center.y() + ( radius - length ) * sine;
 
-        vertexData[0].set( xStart, yStart );
-        vertexData[1].set( xEnd, yEnd );
+        vertexData[0].set( xStart, yStart, 1.0, 1.0 );
+        vertexData[1].set( xEnd, yEnd, 1.0, 1.0 );
 
         vertexData += 2;
 
@@ -265,11 +342,11 @@ QSGNode* SpeedometerSkinlet::updateNeedleNode(
     auto geometry = needleNode->geometry();
     geometry->allocate( 2 );
 
-    auto vertexData = geometry->vertexDataAsPoint2D();
+    auto vertexData = geometry->vertexDataAsTexturedPoint2D();
     memset( vertexData, 0, static_cast< size_t >( geometry->vertexCount() ) );
 
-    vertexData[0].set( xStart, yStart );
-    vertexData[1].set( xEnd, yEnd );
+    vertexData[0].set( xStart, yStart, 1.0, 1.0 );
+    vertexData[1].set( xEnd, yEnd, 0.4, 0.4 );
 
     geometry->setLineWidth( 2 * needleWidth  );
     geometry->markVertexDataDirty();
