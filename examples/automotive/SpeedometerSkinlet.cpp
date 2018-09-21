@@ -43,35 +43,18 @@ namespace
         const char *vertexShader() const override
         {
             return
-                    "attribute highp vec4 aVertex;                              \n"
-                    "attribute highp vec2 aTexCoord;                            \n"
-                    "uniform highp mat4 qt_Matrix;                              \n"
-                    "varying highp vec2 texCoord;                               \n"
-                    "void main() {                                              \n"
-                    "    gl_Position = qt_Matrix * aVertex;                     \n"
-                    "    texCoord = aTexCoord;                                  \n"
-                    "}";
+                    "attribute highp vec4 qt_Vertex;\nattribute highp vec2 qt_MultiTexCoord0;\nuniform highp mat4 qt_Matrix;\nvarying highp vec2 qt_TexCoord0;\nvoid main() {\n    gl_Position = qt_Matrix * qt_Vertex;\n    qt_TexCoord0 = qt_MultiTexCoord0;\n}\n";
         }
 
         const char *fragmentShader() const override
         {
             return
-                    "uniform lowp float qt_Opacity;                             \n"
-                    "uniform lowp vec4 color;                                   \n"
-                    "varying highp vec2 texCoord;                               \n"
-                    "uniform vec2 resolution; uniform float time; \n"
-                    "void main ()                                               \n"
-                    "{                                                          \n"
-                    "    vec2 coords = texCoord; \n"
-                    "    vec2 uv = ( gl_FragCoord.xy / resolution.xy ); \n"
-                    "    vec3 finalColor = vec3 ( 0., 1., 0. ); \n"
-                    "    gl_FragColor = vec4( finalColor,  texCoord.x * qt_Opacity ); \n"
-                    "}";
+                    "uniform highp sampler2D source;\nuniform lowp float qt_Opacity;\nuniform mediump float spread;\nuniform highp vec2 dirstep;\nuniform lowp vec4 color;\nuniform lowp float thickness;\n\nvarying highp vec2 qt_TexCoord0;\n\nvoid main() {\n    mediump float result = 0.0;\n    highp vec2 pixelStep = dirstep * spread;\n    result += float(0.0529495) * texture2D(source, qt_TexCoord0 + pixelStep * float(-8)).a;\n    result += float(0.105428) * texture2D(source, qt_TexCoord0 + pixelStep * float(-7)).a;\n    result += float(0.191502) * texture2D(source, qt_TexCoord0 + pixelStep * float(-6)).a;\n    result += float(0.317328) * texture2D(source, qt_TexCoord0 + pixelStep * float(-5)).a;\n    result += float(0.479695) * texture2D(source, qt_TexCoord0 + pixelStep * float(-4)).a;\n    result += float(0.66152) * texture2D(source, qt_TexCoord0 + pixelStep * float(-3)).a;\n    result += float(0.832226) * texture2D(source, qt_TexCoord0 + pixelStep * float(-2)).a;\n    result += float(0.955125) * texture2D(source, qt_TexCoord0 + pixelStep * float(-1)).a;\n    result += float(1) * texture2D(source, qt_TexCoord0 + pixelStep * float(0)).a;\n    result += float(0.955125) * texture2D(source, qt_TexCoord0 + pixelStep * float(1)).a;\n    result += float(0.832226) * texture2D(source, qt_TexCoord0 + pixelStep * float(2)).a;\n    result += float(0.66152) * texture2D(source, qt_TexCoord0 + pixelStep * float(3)).a;\n    result += float(0.479695) * texture2D(source, qt_TexCoord0 + pixelStep * float(4)).a;\n    result += float(0.317328) * texture2D(source, qt_TexCoord0 + pixelStep * float(5)).a;\n    result += float(0.191502) * texture2D(source, qt_TexCoord0 + pixelStep * float(6)).a;\n    result += float(0.105428) * texture2D(source, qt_TexCoord0 + pixelStep * float(7)).a;\n    result += float(0.0529495) * texture2D(source, qt_TexCoord0 + pixelStep * float(8)).a;\n    const mediump float wSum = float(8.19155);\n    gl_FragColor = mix(vec4(0), color, clamp((result / wSum) / thickness, 0.0, 1.0)) * qt_Opacity;\n}\n";
         }
 
         QList<QByteArray> attributes() const override
         {
-            return QList<QByteArray>() << "aVertex" << "aTexCoord";
+            return QList<QByteArray>() << "qt_Vertex" << "qt_MultiTexCoord0" << "qt_Matrix" << "qt_TexCoord0";
         }
 
         void updateState( const State *state, const State * ) override
