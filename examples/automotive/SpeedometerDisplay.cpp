@@ -77,29 +77,33 @@ SpeedometerDisplay::SpeedometerDisplay( QQuickItem* parent )
     auto shaderEffect = new QQuickShaderEffect( m_fuelGauge );
 
     shaderEffect->setVertexShader(
-                                "attribute vec4 qt_Vertex;\n"
-                                "attribute vec2 qt_MultiTexCoord0;\n"
-
-//                                "attribute highp vec4 aVertex;                              \n"
-//                                "attribute highp vec2 aTexCoord;                            \n"
-                                "uniform highp mat4 qt_Matrix;                              \n"
-                                "varying highp vec2 texCoord;                               \n"
-                                "void main() {                                              \n"
-                                "    gl_Position = qt_Matrix * qt_Vertex;                     \n"
-                                "    texCoord = qt_MultiTexCoord0;                                  \n"
-                                "}\n");
+"                attribute highp vec4 qt_Vertex;\n"
+"                attribute highp vec2 qt_MultiTexCoord0;\n"
+"                uniform highp mat4 qt_Matrix;\n"
+"                varying highp vec2 qt_TexCoord0;\n"
+"                void main() {\n"
+"                    gl_Position = qt_Matrix * qt_Vertex;\n"
+"                    qt_TexCoord0 = qt_MultiTexCoord0;\n"
+"                }\n"
+                );
     shaderEffect->setFragmentShader(
-                                                        "uniform lowp float qt_Opacity;                             \n"
-                                                        "uniform lowp vec4 color;                                   \n"
-                                                        "varying highp vec2 texCoord;                               \n"
-                                                        "uniform vec2 resolution; uniform float time; \n"
-                                                        "void main ()                                               \n"
-                                                        "{                                                          \n"
-                                                        "    vec2 coords = texCoord; \n"
-                                                        "    vec2 uv = ( gl_FragCoord.xy / resolution.xy ); \n"
-                                                        "    vec3 finalColor = vec3 ( 0., 1., 0. ); \n"
-                                                        "    gl_FragColor = vec4( finalColor, 0.01 * qt_Opacity ); \n"
-                                                        "}\n");
+"                uniform highp sampler2D source;\n"
+"                uniform lowp float qt_Opacity;\n"
+"                uniform mediump float spread;\n"
+"                uniform highp vec2 dirstep;\n"
+"                uniform lowp vec4 color;\n"
+"                uniform lowp float thickness;\n"
+"                \n"
+"                varying highp vec2 qt_TexCoord0;\n"
+"                \n"
+"                void main() {\n"
+"                    mediump float result = 0.0;\n"
+"                    highp vec2 pixelStep = dirstep * spread;\n"
+"                    result += float(1) * texture2D(source, qt_TexCoord0 + pixelStep * float(0)).a;\n"
+"                    const mediump float wSum = float(1);\n"
+"                    gl_FragColor = mix(vec4(0), color, clamp((result / wSum) / thickness, 0.0, 1.0)) * qt_Opacity;\n"
+"                }\n"
+                );
 
     QTimer::singleShot( 3000, this, [shaderEffect, this]() {
         qDebug() << "shader status:" << shaderEffect->log() << shaderEffect->status();
