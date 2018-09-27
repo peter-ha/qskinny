@@ -12,6 +12,8 @@ QSK_PLUGIN_DIR = $${QSK_OUT_ROOT}/plugins
 QMAKE_RPATHDIR *= $${QSK_PLUGIN_DIR}/skins
 LIBS *= -L$${QSK_PLUGIN_DIR}/skins -lsquiekskin -lmaterialskin
 
+QT += quick quick-private
+
 HEADERS += \
     ButtonBar.h \
     SoundControl.h \

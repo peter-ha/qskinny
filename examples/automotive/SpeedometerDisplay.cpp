@@ -6,6 +6,7 @@
 #include <QskLinearBox.h>
 #include <QskTextLabel.h>
 
+#include <private/qquickshadereffect_p.h>
 #include <QTime>
 #include <QTimer>
 #include <QtGlobal>
@@ -72,10 +73,56 @@ SpeedometerDisplay::SpeedometerDisplay( QQuickItem* parent )
     timer->setInterval( 16 );
     timer->start();
 
+
+    auto shaderEffect = new QQuickShaderEffect( m_fuelGauge );
+
+    shaderEffect->setVertexShader(
+                                "attribute vec4 qt_Vertex;\n"
+                                "attribute vec2 qt_MultiTexCoord0;\n"
+
+//                                "attribute highp vec4 aVertex;                              \n"
+//                                "attribute highp vec2 aTexCoord;                            \n"
+                                "uniform highp mat4 qt_Matrix;                              \n"
+                                "varying highp vec2 texCoord;                               \n"
+                                "void main() {                                              \n"
+                                "    gl_Position = qt_Matrix * qt_Vertex;                     \n"
+                                "    texCoord = qt_MultiTexCoord0;                                  \n"
+                                "}\n");
+    shaderEffect->setFragmentShader(
+                                                        "uniform lowp float qt_Opacity;                             \n"
+                                                        "uniform lowp vec4 color;                                   \n"
+                                                        "varying highp vec2 texCoord;                               \n"
+                                                        "uniform vec2 resolution; uniform float time; \n"
+                                                        "void main ()                                               \n"
+                                                        "{                                                          \n"
+                                                        "    vec2 coords = texCoord; \n"
+                                                        "    vec2 uv = ( gl_FragCoord.xy / resolution.xy ); \n"
+                                                        "    vec3 finalColor = vec3 ( 0., 1., 0. ); \n"
+                                                        "    gl_FragColor = vec4( finalColor, 0.01 * qt_Opacity ); \n"
+                                                        "}\n");
+
+    QTimer::singleShot( 3000, this, [shaderEffect, this]() {
+        qDebug() << "shader status:" << shaderEffect->log() << shaderEffect->status();
+    });
+
     m_fuelGauge->setObjectName( QStringLiteral( "Fuel Gauge" ) );
     m_fuelGauge->setMinimum( 195 );
     m_fuelGauge->setMaximum( 345 );
     m_fuelGauge->setValue( 330 );
+
+    // ### we should introduce a class QskShader and do this in the constructor or so
+    if( shaderEffect->parentItem() != nullptr )
+    {
+        connect( shaderEffect->parentItem(), &QQuickItem::widthChanged, [shaderEffect]()
+        {
+            shaderEffect->setWidth( shaderEffect->parentItem()->width() );
+        });
+
+        connect( shaderEffect->parentItem(), &QQuickItem::heightChanged, [shaderEffect]()
+        {
+            shaderEffect->setHeight( shaderEffect->parentItem()->height() );
+        });
+    }
 
     QVector< QString > fuelGaugeLabels;
     fuelGaugeLabels.append( { "0", "", "1/2", "", "1/1" } );
