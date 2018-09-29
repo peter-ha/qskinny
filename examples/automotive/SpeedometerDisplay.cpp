@@ -73,18 +73,26 @@ SpeedometerDisplay::SpeedometerDisplay( QQuickItem* parent )
     timer->setInterval( 16 );
     timer->start();
 
+    m_revCounterText->setMargins( 50 );
+    m_speedometerText->setMargins( 50 );
+    m_fuelGaugeText->setMargins( 50 );
 
     m_fuelGauge->setObjectName( QStringLiteral( "Fuel Gauge" ) );
     m_fuelGauge->setMinimum( 195 );
     m_fuelGauge->setMaximum( 345 );
     m_fuelGauge->setValue( 330 );
+
+    QVector< QString > fuelGaugeLabels;
+    fuelGaugeLabels.append( { "0", "", "1/2", "", "1/1" } );
+    m_fuelGauge->setLabels( fuelGaugeLabels );
+
 //    m_fuelGauge->setOpacity( 0.3 );
 
-    auto shaderEffect = new ShaderEffect( m_fuelGauge );
-    shaderEffect->setProperty( "delta", QSizeF( 0.0, 0.00625 ) );
+    auto verticalBlur = new ShaderEffect( m_fuelGauge );
+    verticalBlur->setProperty( "delta", QSizeF( 0.0, 0.00125 ) ); // ### set depending on height
 
-    shaderEffect->setVertexShader( "" ); // otherwise status will be reported as error
-    shaderEffect->setFragmentShader(
+    verticalBlur->setVertexShader( "" ); // otherwise status will be reported as error
+    verticalBlur->setFragmentShader(
         "uniform lowp float qt_Opacity;\n"
         "uniform sampler2D source;\n"
         "uniform highp vec2 delta;\n"
@@ -101,14 +109,10 @@ SpeedometerDisplay::SpeedometerDisplay( QQuickItem* parent )
         "}\n"
     );
 
-    QVector< QString > fuelGaugeLabels;
-    fuelGaugeLabels.append( { "0", "", "1/2", "", "1/1" } );
-
-    m_fuelGauge->setLabels( fuelGaugeLabels );
-
-    m_revCounterText->setMargins( 50 );
-    m_speedometerText->setMargins( 50 );
-    m_fuelGaugeText->setMargins( 50 );
+    auto horizontalBlur = new ShaderEffect( verticalBlur );
+    horizontalBlur->setProperty( "delta", QSizeF( 0.00125, 0.0 ) ); // ### set depending on width
+    horizontalBlur->setVertexShader( verticalBlur->vertexShader() );
+    horizontalBlur->setFragmentShader( verticalBlur->fragmentShader() );
 }
 
 void SpeedometerDisplay::updateLayout()

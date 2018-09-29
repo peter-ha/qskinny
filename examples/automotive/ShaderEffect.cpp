@@ -7,8 +7,6 @@ ShaderEffect::ShaderEffect( QQuickItem *parent ) : Inherited( parent  ),
 {
     Q_ASSERT( parent );
 
-//    Q_DECLARE_METATYPE( QQuickShaderEffectSource );
-
     // ### need to make this more flexible
     m_shaderEffectSource->setSourceItem( parent );
     m_shaderEffectSource->setRecursive( true ); // ### why do we need this?
@@ -26,6 +24,10 @@ ShaderEffect::ShaderEffect( QQuickItem *parent ) : Inherited( parent  ),
 
     connect( this, &QQuickShaderEffect::statusChanged, [ this ]()
     {
-        qDebug() << "shader status:" << status() << log();
+        qDebug() << "shader status:" << status();
+        if( !log().isEmpty() )
+        {
+            qDebug() << "log:" << log();
+        }
     } );
 }
