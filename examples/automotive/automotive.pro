@@ -23,7 +23,8 @@ HEADERS += \
     MainWindow.h \
     Speedometer.h \
     SpeedometerSkinlet.h \
-    SpeedometerDisplay.h
+    SpeedometerDisplay.h \
+    ShaderEffect.h
 
 SOURCES += \
     ButtonBar.cpp \
@@ -35,7 +36,8 @@ SOURCES += \
     main.cpp \
     Speedometer.cpp \
     SpeedometerSkinlet.cpp \
-    SpeedometerDisplay.cpp
+    SpeedometerDisplay.cpp \
+    ShaderEffect.cpp
 
 QRCFILES += \
     images.qrc

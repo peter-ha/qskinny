@@ -1,13 +1,12 @@
 #include "SpeedometerDisplay.h"
 
 #include "Speedometer.h"
+#include "ShaderEffect.h"
 
 #include <QskEvent.h>
 #include <QskLinearBox.h>
 #include <QskTextLabel.h>
 
-#include <private/qquickshadereffect_p.h>
-#include <private/qquickshadereffectsource_p.h>
 #include <QTime>
 #include <QTimer>
 #include <QtGlobal>
@@ -81,49 +80,26 @@ SpeedometerDisplay::SpeedometerDisplay( QQuickItem* parent )
     m_fuelGauge->setValue( 330 );
 //    m_fuelGauge->setOpacity( 0.3 );
 
-    auto shaderEffectSource = new QQuickShaderEffectSource( m_fuelGauge );
-    shaderEffectSource->setSourceItem( m_fuelGauge );
-    shaderEffectSource->setRecursive( true ); // ### why do we need this?
-
-    auto shaderEffect = new QQuickShaderEffect( m_fuelGauge );
-    shaderEffect->setProperty( "source", QVariant::fromValue( shaderEffectSource ) );
+    auto shaderEffect = new ShaderEffect( m_fuelGauge );
     shaderEffect->setProperty( "delta", QSizeF( 0.0, 0.00625 ) );
 
     shaderEffect->setVertexShader( "" ); // otherwise status will be reported as error
     shaderEffect->setFragmentShader(
-                    "uniform lowp float qt_Opacity;\n"
-                    "uniform sampler2D source;\n"
-                    "uniform highp vec2 delta;\n"
-                    "\n"
-                    "varying highp vec2 qt_TexCoord0;\n"
-                    "\n"
-                    "void main()\n"
-                    "{\n"
-                    "    gl_FragColor =(0.0538 * texture2D(source, qt_TexCoord0 - 3.182 * delta)\n"
-                    "                 + 0.3229 * texture2D(source, qt_TexCoord0 - 1.364 * delta)\n"
-                    "                 + 0.2466 * texture2D(source, qt_TexCoord0)\n"
-                    "                 + 0.3229 * texture2D(source, qt_TexCoord0 + 1.364 * delta)\n"
-                    "                 + 0.0538 * texture2D(source, qt_TexCoord0 + 3.182 * delta)) * qt_Opacity;\n"
-                    "}\n"
-                );
-
-    QTimer::singleShot( 3000, this, [shaderEffect]() {
-        qDebug() << "shader status:" << shaderEffect->log() << shaderEffect->status();
-    });
-
-    // ### we should introduce a class QskShader and do this in the constructor or so
-    if( shaderEffect->parentItem() != nullptr )
-    {
-        connect( shaderEffect->parentItem(), &QQuickItem::widthChanged, [shaderEffect]()
-        {
-            shaderEffect->setWidth( shaderEffect->parentItem()->width() );
-        });
-
-        connect( shaderEffect->parentItem(), &QQuickItem::heightChanged, [shaderEffect]()
-        {
-            shaderEffect->setHeight( shaderEffect->parentItem()->height() );
-        });
-    }
+        "uniform lowp float qt_Opacity;\n"
+        "uniform sampler2D source;\n"
+        "uniform highp vec2 delta;\n"
+        "\n"
+        "varying highp vec2 qt_TexCoord0;\n"
+        "\n"
+        "void main()\n"
+        "{\n"
+        "    gl_FragColor =(0.0538 * texture2D(source, qt_TexCoord0 - 3.182 * delta)\n"
+        "                 + 0.3229 * texture2D(source, qt_TexCoord0 - 1.364 * delta)\n"
+        "                 + 0.2466 * texture2D(source, qt_TexCoord0)\n"
+        "                 + 0.3229 * texture2D(source, qt_TexCoord0 + 1.364 * delta)\n"
+        "                 + 0.0538 * texture2D(source, qt_TexCoord0 + 3.182 * delta)) * qt_Opacity;\n"
+        "}\n"
+    );
 
     QVector< QString > fuelGaugeLabels;
     fuelGaugeLabels.append( { "0", "", "1/2", "", "1/1" } );

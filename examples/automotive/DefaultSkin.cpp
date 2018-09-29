@@ -147,6 +147,7 @@ void DefaultSkin::initHints()
 
     // -- speedometers
 
+    setMargins( Speedometer::Panel | QskAspect::Padding, 20 ); // ### not respected yet
     setBoxBorderMetrics( Speedometer::Panel, 2 );
     setGradient( Speedometer::Panel, m_palette->color1 );
     setBoxBorderColors( Speedometer::Panel, m_palette->color3 );
