@@ -88,8 +88,8 @@ SpeedometerDisplay::SpeedometerDisplay( QQuickItem* parent )
 
 //    m_fuelGauge->setOpacity( 0.3 );
 
-    auto verticalBlur = new ShaderEffect( m_fuelGauge );
-    verticalBlur->setProperty( "delta", QSizeF( 0.0, 0.00125 ) ); // ### set depending on height
+    auto verticalBlur = new ShaderEffect( m_speedometer );
+    verticalBlur->setProperty( "delta", QSizeF( 0.00325, 0.00325 ) ); // ### set depending on height
 
     verticalBlur->setVertexShader( "" ); // otherwise status will be reported as error
     verticalBlur->setFragmentShader(
@@ -109,10 +109,10 @@ SpeedometerDisplay::SpeedometerDisplay( QQuickItem* parent )
         "}\n"
     );
 
-    auto horizontalBlur = new ShaderEffect( verticalBlur );
-    horizontalBlur->setProperty( "delta", QSizeF( 0.00125, 0.0 ) ); // ### set depending on width
-    horizontalBlur->setVertexShader( verticalBlur->vertexShader() );
-    horizontalBlur->setFragmentShader( verticalBlur->fragmentShader() );
+//    auto horizontalBlur = new ShaderEffect( verticalBlur );
+//    horizontalBlur->setProperty( "delta", QSizeF( 0.00125, 0.0 ) ); // ### set depending on width
+//    horizontalBlur->setVertexShader( verticalBlur->vertexShader() );
+//    horizontalBlur->setFragmentShader( verticalBlur->fragmentShader() );
 }
 
 void SpeedometerDisplay::updateLayout()

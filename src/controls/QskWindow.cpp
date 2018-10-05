@@ -123,9 +123,9 @@ class QskWindowPrivate : public QQuickWindowPrivate
 QskWindow::QskWindow( QWindow* parent )
     : Inherited( *( new QskWindowPrivate() ), parent )
 {
-    QSurfaceFormat fmt = format();
-    fmt.setSamples( 4 );
-    setFormat( fmt );
+//    QSurfaceFormat fmt = format();
+//    fmt.setSamples( 4 );
+//    setFormat( fmt );
 
     if ( parent )
     {

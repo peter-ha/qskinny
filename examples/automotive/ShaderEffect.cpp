@@ -9,7 +9,7 @@ ShaderEffect::ShaderEffect( QQuickItem *parent ) : Inherited( parent  ),
 
     // ### need to make this more flexible
     m_shaderEffectSource->setSourceItem( parent );
-    m_shaderEffectSource->setRecursive( true ); // ### why do we need this?
+//    m_shaderEffectSource->setRecursive( true ); // ### why do we need this?
     setProperty( "source", QVariant::fromValue( m_shaderEffectSource.get() ) );
 
     connect( parentItem(), &QQuickItem::widthChanged, [ this ]()
