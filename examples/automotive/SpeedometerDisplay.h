@@ -6,6 +6,7 @@
 class QskLinearBox;
 class QskTextLabel;
 class Speedometer;
+class QskShaderEffectItem;
 
 class SpeedometerDisplay : public QskControl
 {
@@ -23,6 +24,8 @@ class SpeedometerDisplay : public QskControl
     QskTextLabel* m_speedometerText;
     Speedometer* m_fuelGauge;
     QskTextLabel* m_fuelGaugeText;
+    QskShaderEffectItem* m_shader;
+    QskTextLabel* m_t;
 };
 
 #endif

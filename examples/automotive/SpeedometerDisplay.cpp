@@ -59,7 +59,12 @@ SpeedometerDisplay::SpeedometerDisplay( QQuickItem* parent )
 
     m_speedometer->setLabels( speedometerLabels );
 
-    auto shader = new QskShaderEffectItem( m_speedometer );
+    m_shader = new QskShaderEffectItem( m_speedometer );
+
+    m_t = new QskTextLabel( "my text", m_shader );
+    m_t->setFixedSize( 300, 200 );
+    m_t->setTextColor( Qt::red );
+    m_t->setBackgroundColor( Qt::blue );
 
     auto timer = new QTimer( this );
 
@@ -114,4 +119,9 @@ void SpeedometerDisplay::updateLayout()
     x = ( 0.7 * radius - hint.width() ) / 2;
     y = ( ( 0.7 * radius - hint.height() ) / 2 ) + m_fuelGaugeText->margins().top();
     m_fuelGaugeText->setGeometry( x, y, hint.width(), hint.height() );
+
+    m_shader->setFixedSize( radius, radius );
+    m_shader->setSize( QSizeF( radius, radius ) );
+    m_t->setGeometry( m_speedometerText->geometry() );
+    qDebug() << "shader:" << m_shader->isVisible() << m_shader->size();
 }
