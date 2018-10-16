@@ -4,6 +4,7 @@
 
 #include <QskEvent.h>
 #include <QskLinearBox.h>
+#include <QskShaderEffectItem.h>
 #include <QskTextLabel.h>
 
 #include <QTime>
@@ -57,6 +58,8 @@ SpeedometerDisplay::SpeedometerDisplay( QQuickItem* parent )
     }
 
     m_speedometer->setLabels( speedometerLabels );
+
+    auto shader = new QskShaderEffectItem( m_speedometer );
 
     auto timer = new QTimer( this );
 

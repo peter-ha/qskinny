@@ -62,6 +62,9 @@ QSK_QT_PRIVATE_END
 #include "QskSeparator.h"
 #include "QskSeparatorSkinlet.h"
 
+#include "QskShaderEffectItem.h"
+#include "QskShaderEffectItemSkinlet.h"
+
 #include "QskSubWindow.h"
 #include "QskSubWindowSkinlet.h"
 
@@ -129,6 +132,7 @@ QskSkin::QskSkin( QObject* parent )
     declareSkinlet< QskPushButton, QskPushButtonSkinlet >();
     declareSkinlet< QskScrollView, QskScrollViewSkinlet >();
     declareSkinlet< QskSeparator, QskSeparatorSkinlet >();
+    declareSkinlet< QskShaderEffectItem, QskShaderEffectItemSkinlet>();
     declareSkinlet< QskSlider, QskSliderSkinlet >();
     declareSkinlet< QskStatusIndicator, QskStatusIndicatorSkinlet >();
     declareSkinlet< QskSubWindow, QskSubWindowSkinlet >();

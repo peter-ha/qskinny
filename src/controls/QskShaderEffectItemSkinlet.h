@@ -3,6 +3,8 @@
 
 #include "QskSkinlet.h"
 
+class QskShaderEffectItem;
+
 class QskShaderEffectItemSkinlet : public QskSkinlet
 {
     Q_GADGET
@@ -10,8 +12,21 @@ class QskShaderEffectItemSkinlet : public QskSkinlet
     using Inherited = QskSkinlet;
 
 public:
-    QskShaderEffectItemSkinlet( QskSkin* = nullptr );
+    enum NodeRole
+    {
+        ShaderRole
+    };
+
+    Q_INVOKABLE QskShaderEffectItemSkinlet( QskSkin* = nullptr );
     ~QskShaderEffectItemSkinlet() override;
+
+    QRectF subControlRect( const QskSkinnable*, QskAspect::Subcontrol ) const override;
+
+protected:
+    QSGNode* updateSubNode( const QskSkinnable*, quint8 nodeRole, QSGNode* ) const override;
+
+private:
+    QSGNode* updateShaderNode( const QskShaderEffectItem*, QSGNode* ) const;
 };
 
 #endif // QSKSHADEREFFECTITEMSKINLET_H

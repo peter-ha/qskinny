@@ -2,5 +2,4 @@
 
 QskShaderEffectItem::QskShaderEffectItem( QQuickItem *parent ) : Inherited( parent )
 {
-
 }
