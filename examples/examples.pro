@@ -23,6 +23,7 @@ qtHaveModule(svg) {
 
 # qml
 SUBDIRS += \
+    automotive-qml \
     boxes \
     buttons \
     colorswitch \

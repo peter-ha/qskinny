@@ -1,0 +1,40 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+
+    <qresource>
+        <file>BalanceFadeArrow.qml</file>
+        <file>BalanceFadeContent.qml</file>
+        <file>ButtonBar.qml</file>
+        <file>Content.qml</file>
+        <file>Footer.qml</file>
+        <file>Header.qml</file>
+        <file>MainText.qml</file>
+        <file>main.qml</file>
+        <file>SoundControlSlider.qml</file>
+        <file>Title.qml</file>
+        <file>ToneButton.qml</file>
+        <file>ToneContent.qml</file>
+
+        <file>../automotive/images/background.jpg</file>
+        <file>../automotive/images/car.svg</file>
+
+		<file>../automotive/images/bluetooth.svg</file>
+		<file>../automotive/images/bookmark.svg</file>
+		<file>../automotive/images/bus.svg</file>
+		<file>../automotive/images/cloud.svg</file>
+		<file>../automotive/images/location.svg</file>
+		<file>../automotive/images/man.svg</file>
+		<file>../automotive/images/menu.svg</file>
+		<file>../automotive/images/phone.svg</file>
+		<file>../automotive/images/plane.svg</file>
+		<file>../automotive/images/train.svg</file>
+		<file>../automotive/images/user.svg</file>
+
+        <file>../automotive/images/down.svg</file>
+        <file>../automotive/images/left.svg</file>
+        <file>../automotive/images/right.svg</file>
+        <file>../automotive/images/up.svg</file>
+    </qresource>
+
+</RCC>
+
