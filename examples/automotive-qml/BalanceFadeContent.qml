@@ -1,5 +1,6 @@
 import QtQuick 2.11
 import QtQuick.Layouts 1.11
+import "imports"
 
 GridLayout {
 //    rows: 3
@@ -7,7 +8,7 @@ GridLayout {
     rowSpacing: 5
     columnSpacing: 5
 
-    BalanceFadeArrow {
+    BalanceFadeArrow { // ### implement button clicks
         source: "/../automotive/images/up.svg"
         Layout.alignment: Qt.AlignHCenter
         isPortrait: false
@@ -28,20 +29,20 @@ GridLayout {
             width: parent.width
             height: 3
             anchors.verticalCenter: parent.verticalCenter
-            color: "#41EAD4"
+            color: Colors.color3
         }
         Rectangle { // vertical line
             width: 3
             height: parent.height
             anchors.horizontalCenter: parent.horizontalCenter
-            color: "#41EAD4"
+            color: Colors.color3
         }
         Rectangle { // center dot
             anchors.centerIn: parent
             width: 30
             height: width
             radius: width / 2
-            color: "#B91372"
+            color: Colors.color5
         }
     }
     BalanceFadeArrow {

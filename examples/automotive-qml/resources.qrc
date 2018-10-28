@@ -14,6 +14,8 @@
         <file>Title.qml</file>
         <file>ToneButton.qml</file>
         <file>ToneContent.qml</file>
+        <file>imports/Colors.qml</file>
+        <file>imports/qmldir</file>
 
         <file>../automotive/images/background.jpg</file>
         <file>../automotive/images/car.svg</file>

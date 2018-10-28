@@ -1,4 +1,5 @@
 import QtQuick 2.11
+import "imports"
 
 Item {
     id: root
@@ -12,7 +13,7 @@ Item {
             height: 2
             width: 0.04 * root.width
             anchors.verticalCenter: text.verticalCenter
-            color: "turquoise" // ###
+            color: Colors.color3
         }
         MainText {
             id: text
@@ -22,7 +23,7 @@ Item {
             height: 2
             width: root.width - (leftLine.width + text.implicitWidth + 2 * row.spacing)
             anchors.verticalCenter: text.verticalCenter
-            color: "turquoise"
+            color: Colors.color3
         }
     }
 }

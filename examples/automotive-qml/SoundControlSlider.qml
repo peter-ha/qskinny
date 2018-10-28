@@ -1,5 +1,6 @@
 import QtQuick 2.11
 import QtQuick.Controls 2.4
+import "imports"
 
 Slider {
     id: root
@@ -12,11 +13,11 @@ Slider {
         width: 2
         height: root.height
         radius: 2
-        color: "#7e7f7e"
+        color: Colors.color4darker
         Rectangle {
             width: 2
             height: root.visualPosition * parent.height
-            color: "#FDFFFC"
+            color: Colors.color4
             radius: 2
         }
     }
@@ -26,6 +27,6 @@ Slider {
         radius: 10
         implicitWidth: 20
         implicitHeight: 20
-        color: "#B91372"
+        color: Colors.color5
     }
 }

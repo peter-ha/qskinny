@@ -1,7 +1,8 @@
 import QtQuick 2.11
+import "imports"
 
 Rectangle {
-    color: "#88000000"
+    color: Colors.darkerBackground
     height: 56
     ButtonBar {
         id: leftButtonBar
@@ -21,7 +22,7 @@ Rectangle {
         anchors.verticalCenter: parent.verticalCenter
         text: new Date().toLocaleDateString(Qt.locale("de_DE"), "ddd M dd yyyy")
         font.pixelSize: 20
-        color: "white"
+        color: Colors.color4
     }
     ButtonBar {
         height: parent.height

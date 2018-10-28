@@ -1,7 +1,8 @@
 import QtQuick 2.11
+import "imports"
 
 Rectangle {
-    color: "#88000000"
+    color: Colors.darkerBackground
     height: 56
     ButtonBar {
         id: buttonBar

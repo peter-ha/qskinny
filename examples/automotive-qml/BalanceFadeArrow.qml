@@ -1,4 +1,5 @@
 import QtQuick 2.11
+import "imports"
 
 Rectangle {
     property bool isPortrait
@@ -7,7 +8,7 @@ Rectangle {
     property string source
     width: isPortrait ? w : h
     height: isPortrait ? h : w
-    color: "#011627" // ### store colors in one place
+    color: Colors.color1
 
     Image {
         source: parent.source

@@ -22,4 +22,7 @@ DISTFILES += \
     ToneButton.qml \
     ToneContent.qml \
     BalanceFadeContent.qml \
-    BalanceFadeArrowImage.qml
+    BalanceFadeArrowImage.qml \
+    Settings.qml \
+    imports/Colors.qml \
+    imports/qmldir

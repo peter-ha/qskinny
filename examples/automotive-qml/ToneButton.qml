@@ -1,18 +1,19 @@
 import QtQuick 2.11
 import QtQuick.Controls 2.4 // ### is there a newer version?
+import "imports"
 
 Button {
     id: root
     width: 30
     height: width
     contentItem: Text {
-        color: "turquoise"
+        color: Colors.color3
         text: parent.text
         font.pixelSize: 35
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
     }
     background: Rectangle {
-        color: parent.pressed ? "#FF0022" : "#011627"
+        color: parent.pressed ? Colors.color2 : Colors.color1
     }
 }
