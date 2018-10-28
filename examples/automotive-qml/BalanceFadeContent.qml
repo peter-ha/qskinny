@@ -3,7 +3,7 @@ import QtQuick.Layouts 1.11
 import "imports"
 
 GridLayout {
-//    rows: 3
+    rows: 3
     columns: 3
     rowSpacing: 5
     columnSpacing: 5
