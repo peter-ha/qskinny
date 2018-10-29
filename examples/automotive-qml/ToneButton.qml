@@ -3,7 +3,6 @@ import QtQuick.Controls 2.4
 import "imports"
 
 Button {
-    id: root
     width: 30
     height: width
     contentItem: Text {

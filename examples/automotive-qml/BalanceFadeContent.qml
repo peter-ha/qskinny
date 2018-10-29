@@ -7,16 +7,19 @@ GridLayout {
     columns: 3
     rowSpacing: 5
     columnSpacing: 5
+    property int step: 5
 
-    BalanceFadeArrow { // ### implement button clicks
+    BalanceFadeArrow {
         source: "/../automotive/images/up.svg"
         Layout.alignment: Qt.AlignHCenter
         isPortrait: false
         Layout.columnSpan: 3
+        onClicked: dot.y -= parent.step
     }
     BalanceFadeArrow {
         source: "/../automotive/images/left.svg"
         isPortrait: true
+        onClicked: dot.x -= parent.step
     }
     Image {
         id: car
@@ -38,7 +41,9 @@ GridLayout {
             color: Colors.color3
         }
         Rectangle { // center dot
-            anchors.centerIn: parent
+            id: dot
+            x: parent.width / 2 - radius
+            y: parent.height / 2 - radius
             width: 30
             height: width
             radius: width / 2
@@ -48,11 +53,13 @@ GridLayout {
     BalanceFadeArrow {
         source: "/../automotive/images/right.svg"
         isPortrait: true
+        onClicked: dot.x += parent.step
     }
     BalanceFadeArrow {
         source: "/../automotive/images/down.svg"
         Layout.alignment: Qt.AlignHCenter
         isPortrait: false
         Layout.columnSpan: 3
+        onClicked: dot.y += parent.step
     }
 }
