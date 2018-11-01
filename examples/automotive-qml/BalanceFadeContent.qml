@@ -24,7 +24,6 @@ GridLayout {
     Image {
         id: car
         source: "/../automotive/images/car.svg"
-        width: 500 // ###
         height: 260
         sourceSize.width: width
         sourceSize.height: height

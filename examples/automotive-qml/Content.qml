@@ -10,7 +10,7 @@ Grid {
     leftPadding: 40
     topPadding: 30
     rightPadding: 40
-    bottomPadding: 20
+    bottomPadding: 30
     property real contentWidth: width - (leftPadding + columnSpacing  * (columns - 1) + rightPadding)
 
     Title {
@@ -27,9 +27,9 @@ Grid {
     }
     ToneContent {
         width: toneTitle.width
+        height: parent.height - (toneTitle.height + rowSpacing + topPadding + bottomPadding)
     }
     BalanceFadeContent {
         width: balanceFadeTitle.width
-        height: 30
     }
 }

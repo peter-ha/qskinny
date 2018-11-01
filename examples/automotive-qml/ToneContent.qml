@@ -1,72 +1,91 @@
 import QtQuick 2.11
+import QtQuick.Layouts 1.11
 
-Grid {
+GridLayout {
     rows: 5
     columns: 3
     rowSpacing: 5
     columnSpacing: 20
-    leftPadding: 20
-    rightPadding: 20
-    horizontalItemAlignment: Grid.AlignHCenter
-    property real contentWidth: width - (leftPadding + columnSpacing * (columns - 1) + rightPadding)
     MainText {
+        id: bassText
+        Layout.alignment: Qt.AlignHCenter
         text: "Bass"
     }
     MainText {
         text: "Treble"
+        Layout.alignment: Qt.AlignHCenter
     }
     MainText {
         text: "Sub"
+        Layout.alignment: Qt.AlignHCenter
     }
     MainText {
+        id: bassValue
         text: Number(bassSlider.value).toLocaleString(Qt.locale("en_EN"), "f", 1)
+        Layout.alignment: Qt.AlignHCenter
     }
     MainText {
         text: Number(trebleSlider.value).toLocaleString(Qt.locale("en_EN"), "f", 1)
+        Layout.alignment: Qt.AlignHCenter
     }
     MainText {
         text: Number(subSlider.value).toLocaleString(Qt.locale("en_EN"), "f", 1)
+        Layout.alignment: Qt.AlignHCenter
     }
     ToneButton {
+        id: bassPlusButton
+        Layout.preferredHeight: width
         text: "+"
+        Layout.alignment: Qt.AlignHCenter
         onClicked: bassSlider.value += 2
     }
     ToneButton {
         text: "+"
+        Layout.preferredHeight: width
+        Layout.alignment: Qt.AlignHCenter
         onClicked: trebleSlider.value += 2
     }
     ToneButton {
         text: "+"
+        Layout.preferredHeight: width
+        Layout.alignment: Qt.AlignHCenter
         onClicked: subSlider.value += 2
     }
     SoundControlSlider {
         id: bassSlider
-        width: 0.33 * parent.contentWidth
-        height: 245 // ###
+        Layout.preferredHeight: parent.height - (bassText.height + bassValue.height + bassPlusButton.height + bassMinusButton.height + parent.rowSpacing * 4)
+        Layout.alignment: Qt.AlignHCenter
         value: 30
     }
     SoundControlSlider {
         id: trebleSlider
-        width: 0.33 * parent.contentWidth
-        height: bassSlider.height
+        Layout.preferredHeight: bassSlider.Layout.preferredHeight
+        Layout.alignment: Qt.AlignHCenter
         value: 11
     }
     SoundControlSlider {
         id: subSlider
-        width: 0.33 * parent.contentWidth
-        height: bassSlider.height
+        Layout.preferredHeight: bassSlider.Layout.preferredHeight
+        Layout.alignment: Qt.AlignHCenter
         value: 18
     }
     ToneButton {
+        id: bassMinusButton
+        Layout.preferredHeight: width
         text: "-"
+        Layout.alignment: Qt.AlignHCenter
         onClicked: bassSlider.value -= 2
     }
     ToneButton {
+        Layout.preferredHeight: width
         text: "-"
+        Layout.alignment: Qt.AlignHCenter
         onClicked: trebleSlider.value -= 2
     }
     ToneButton {
+        Layout.preferredHeight: width
         text: "-"
+        Layout.alignment: Qt.AlignHCenter
         onClicked: subSlider.value -= 2
     }
 }

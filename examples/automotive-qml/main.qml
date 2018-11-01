@@ -26,7 +26,6 @@ Item {
         height: 56
         width: root.width
         anchors.bottom: parent.bottom
-        anchors.horizontalCenter: parent.horizontalCenter
     }
 
     Shortcut {
