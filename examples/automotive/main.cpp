@@ -6,6 +6,7 @@
 #include <QskSkinManager.h>
 #include <SkinnyShortcut.h>
 
+#include <QElapsedTimer>
 #include <QGuiApplication>
 #include <iostream>
 
@@ -13,6 +14,8 @@ using namespace std;
 
 int main( int argc, char** argv )
 {
+    QElapsedTimer timer;
+    timer.start();
     auto skinFactory = new SkinFactory();
 
     qskSkinManager->setPluginPaths( QStringList() ); // no plugins
@@ -50,6 +53,15 @@ int main( int argc, char** argv )
         SkinnyShortcut::DebugStatistics | SkinnyShortcut::Quit );
 
     MainWindow mainWindow;
+
+    QObject::connect( &mainWindow, &QQuickWindow::frameSwapped, [ &timer ]() {
+        if( timer.isValid() )
+        {
+            qDebug() << "first frame swap after" << timer.elapsed() << "ms";
+            timer.invalidate();
+        }
+    });
+
     mainWindow.show();
 
     return app.exec();
