@@ -8,21 +8,42 @@
 
 #include <QElapsedTimer>
 #include <QGuiApplication>
+#include <QProcess>
+
 #include <iostream>
+
+#define Q_TIMER 1
+#define Q_MEMORY 1
+
+namespace
+{
+    void measureMemoryUsage( const QByteArray &checkpointName )
+    {
+#ifdef Q_MEMORY
+        qDebug() << "memory usage" << checkpointName << ":";
+        QProcess::execute( "/bin/bash", { "-c", QString::fromLatin1( "grep '^Rss:' /proc/%1/smaps|grep -o '[0-9]*'|datamash sum 1" ).arg( QCoreApplication::applicationPid() ) } );
+#endif
+    }
+}
 
 using namespace std;
 
 int main( int argc, char** argv )
 {
+#ifdef Q_TIMER
     QElapsedTimer timer;
     timer.start();
+#endif
+
     auto skinFactory = new SkinFactory();
 
     qskSkinManager->setPluginPaths( QStringList() ); // no plugins
     qskSkinManager->registerFactory(
         QStringLiteral( "SampleSkinFactory" ), skinFactory );
 
+    measureMemoryUsage( "before creating QGuiApplication" );
     QGuiApplication app( argc, argv );
+    measureMemoryUsage( "after creating QGuiApplication" );
 
     /*
         When going over QPainter for the SVGs we prefer the raster paint
@@ -53,14 +74,18 @@ int main( int argc, char** argv )
         SkinnyShortcut::DebugStatistics | SkinnyShortcut::Quit );
 
     MainWindow mainWindow;
+    measureMemoryUsage( "after creating QskWindow" );
 
+#ifdef Q_TIMER
     QObject::connect( &mainWindow, &QQuickWindow::frameSwapped, [ &timer ]() {
         if( timer.isValid() )
         {
+            measureMemoryUsage( "after first frame swapped" );
             qDebug() << "first frame swap after" << timer.elapsed() << "ms";
             timer.invalidate();
         }
     });
+#endif
 
     mainWindow.show();
 
