@@ -15,12 +15,21 @@
 #define Q_TIMER 1
 #define Q_MEMORY 1
 
+static QElapsedTimer s_timer;
+
 namespace
 {
+    void measureStartupTime( const QByteArray &checkpointName )
+    {
+#ifdef Q_TIMER
+        qDebug() << "time elapsed" << checkpointName << " [ms]:" << s_timer.elapsed();
+#endif
+    }
+
     void measureMemoryUsage( const QByteArray &checkpointName )
     {
 #ifdef Q_MEMORY
-        qDebug() << "memory usage" << checkpointName << ":";
+        qDebug() << "memory usage" << checkpointName << " [KB]:";
         QProcess::execute( "/bin/bash", { "-c", QString::fromLatin1( "grep '^Rss:' /proc/%1/smaps|grep -o '[0-9]*'|datamash sum 1" ).arg( QCoreApplication::applicationPid() ) } );
 #endif
     }
@@ -31,8 +40,7 @@ using namespace std;
 int main( int argc, char** argv )
 {
 #ifdef Q_TIMER
-    QElapsedTimer timer;
-    timer.start();
+    s_timer.start();
 #endif
 
     auto skinFactory = new SkinFactory();
@@ -42,7 +50,9 @@ int main( int argc, char** argv )
         QStringLiteral( "SampleSkinFactory" ), skinFactory );
 
     measureMemoryUsage( "before creating QGuiApplication" );
+    measureStartupTime( "before creating QGuiApplication" );
     QGuiApplication app( argc, argv );
+    measureStartupTime( "after creating QGuiApplication" );
     measureMemoryUsage( "after creating QGuiApplication" );
 
     /*
@@ -73,16 +83,18 @@ int main( int argc, char** argv )
     SkinnyShortcut::enable( SkinnyShortcut::DebugBackground |
         SkinnyShortcut::DebugStatistics | SkinnyShortcut::Quit );
 
+    measureStartupTime( "before creating QskWindow" );
     MainWindow mainWindow;
     measureMemoryUsage( "after creating QskWindow" );
+    measureStartupTime( "after creating QskWindow" );
 
 #ifdef Q_TIMER
-    QObject::connect( &mainWindow, &QQuickWindow::frameSwapped, [ &timer ]() {
-        if( timer.isValid() )
+    QObject::connect( &mainWindow, &QQuickWindow::frameSwapped, []() {
+        if( s_timer.isValid() )
         {
+            measureStartupTime("after first frame swapped" );
             measureMemoryUsage( "after first frame swapped" );
-            qDebug() << "first frame swap after" << timer.elapsed() << "ms";
-            timer.invalidate();
+            s_timer.invalidate();
         }
     });
 #endif
