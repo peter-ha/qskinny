@@ -10,20 +10,20 @@ GridLayout {
     property int step: 5
 
     BalanceFadeArrow {
-        source: "/../automotive/images/up.svg"
+        source: "../automotive/images/up.svg"
         Layout.alignment: Qt.AlignHCenter
         isPortrait: false
         Layout.columnSpan: 3
         onClicked: dot.y -= parent.step
     }
     BalanceFadeArrow {
-        source: "/../automotive/images/left.svg"
+        source: "../automotive/images/left.svg"
         isPortrait: true
         onClicked: dot.x -= parent.step
     }
     Image {
         id: car
-        source: "/../automotive/images/car.svg"
+        source: "../automotive/images/car.svg"
         height: 260
         sourceSize.width: width
         sourceSize.height: height
@@ -50,12 +50,12 @@ GridLayout {
         }
     }
     BalanceFadeArrow {
-        source: "/../automotive/images/right.svg"
+        source: "../automotive/images/right.svg"
         isPortrait: true
         onClicked: dot.x += parent.step
     }
     BalanceFadeArrow {
-        source: "/../automotive/images/down.svg"
+        source: "../automotive/images/down.svg"
         Layout.alignment: Qt.AlignHCenter
         isPortrait: false
         Layout.columnSpan: 3

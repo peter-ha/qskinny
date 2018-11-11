@@ -7,7 +7,7 @@ Item {
     Image {
         id: backgroundImage
         anchors.fill: parent
-        source: "/../automotive/images/background.jpg"
+        source: "../automotive/images/background.jpg"
     }
     Header {
         id: header

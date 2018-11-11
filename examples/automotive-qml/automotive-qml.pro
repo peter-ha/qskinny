@@ -4,7 +4,7 @@ TARGET = automotive-qml
 
 QT += quickcontrols2
 
-CONFIG += qtquickcompiler
+#CONFIG += qtquickcompiler
 
 SOURCES += main.cpp
 

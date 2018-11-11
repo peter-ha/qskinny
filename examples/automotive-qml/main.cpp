@@ -18,7 +18,8 @@ int main(int argc, char *argv[])
             timer.invalidate();
         }
     });
-    view->setSource( QUrl::fromEncoded( "qrc:///main.qml" ) );
+#endif
+    view->setSource( QUrl::fromEncoded( "/home/peter/dev/qskinny/examples/automotive-qml/main.qml" ) );
     view->show();
     return app.exec();
 }

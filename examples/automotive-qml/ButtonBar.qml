@@ -17,7 +17,7 @@ Item {
         Repeater {
             model: root.model
             delegate:  Image {
-                source: "/../automotive/images/" + modelData + ".svg"
+                source: "../automotive/images/" + modelData + ".svg"
                 width: 25
                 height: 25
                 sourceSize.width: width
