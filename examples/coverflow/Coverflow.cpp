@@ -58,16 +58,26 @@ void Coverflow::updateLayout()
 {
     // first, place the active cover:
     const auto bigCoverWidth = height() - 50; // ### style
-    const auto activeCoverX = ( size().width() - bigCoverWidth  ) / 2;
+    const auto activeCoverX = ( size().width() - bigCoverWidth ) / 2;
 
     auto stepX = activeCoverX / m_maxCoversOnEachSide;
     auto smallCoverWidth = stepX - 5; // ### use a hardcoded value through the style
 
     auto swipedToCoverIndex = -1;
 
-    if( m_activeCoverIndex > 0 && m_activeCoverIndex < m_covers.count() - 1 )
+    if( m_activeCoverIndex >= 0 && m_activeCoverIndex <= m_covers.count() - 1 )
     {
         swipedToCoverIndex = ( m_swipeOffset > 0 ) ? m_activeCoverIndex - 1 : m_activeCoverIndex + 1;
+    }
+
+    if( ( m_activeCoverIndex == 0
+               && m_swipeDirection == Qsk::LeftToRight
+               && m_swipeOffset > 0 )
+             || ( m_activeCoverIndex == m_covers.count() - 1
+                  && m_swipeDirection == Qsk::RightToLeft
+                  && m_swipeOffset < 0 ) )
+    {
+        return; // we reached one end of the list
     }
 
     // ### something is not completely right about the fraction
@@ -77,18 +87,19 @@ void Coverflow::updateLayout()
     const auto widthDiff = std::abs( bigCoverWidth - smallCoverWidth );
     auto activeCoverWidth = bigCoverWidth - std::abs( fraction ) * widthDiff;
     activeCoverWidth = qMax( activeCoverWidth, smallCoverWidth );
-    qDebug() << activeCoverWidth << bigCoverWidth;
 
     const auto activeCoverY = ( size().height() - activeCoverWidth ) / 2;
     auto swipedToCoverWidth = smallCoverWidth + std::abs( fraction ) * widthDiff;
     swipedToCoverWidth = qMin( swipedToCoverWidth, bigCoverWidth );
 
-    auto leftXOffset = ( swipedToCoverIndex > -1 && swipedToCoverIndex < m_activeCoverIndex ) ? ( swipedToCoverWidth - smallCoverWidth ) : 0;
+    auto offsetDiff = swipedToCoverWidth - smallCoverWidth;
+    auto globalXOffset = ( m_swipeDirection == Qsk::LeftToRight ) ? offsetDiff : -offsetDiff;
 
     if( m_activeCoverIndex != -1 )
     {
         auto activeCover = m_covers.at( m_activeCoverIndex );
-        activeCover->setGeometry( activeCoverX + leftXOffset, activeCoverY, activeCoverWidth, activeCoverWidth );
+        auto offset = ( m_swipeDirection == Qsk::LeftToRight ) ? globalXOffset : 0;
+        activeCover->setGeometry( activeCoverX + globalXOffset + offset, activeCoverY, activeCoverWidth, activeCoverWidth );
     }
 
     // then, place the covers left of the active one:
@@ -107,7 +118,7 @@ void Coverflow::updateLayout()
         // ### we could only set the position here and only set the size once
         cover->setVisible( true );
         auto width = ( index == swipedToCoverIndex ) ? swipedToCoverWidth : smallCoverWidth;
-        cover->setGeometry( x, y + yOffset, width, width );
+        cover->setGeometry( x + globalXOffset, y + yOffset, width, width );
     }
 
     // make covers invisible that are out of range on the right side:
@@ -130,7 +141,7 @@ void Coverflow::updateLayout()
 
         auto x = ( m_maxCoversOnEachSide + ( a - 1 ) ) * stepX + activeCoverWidth + 5;
 
-        auto xOffset = ( index > swipedToCoverIndex ) ? ( swipedToCoverWidth - smallCoverWidth ) : 0;
+        auto xOffset = ( index > swipedToCoverIndex ) ? ( swipedToCoverWidth - smallCoverWidth ) + globalXOffset : globalXOffset;
 
         auto yOffset = ( index == swipedToCoverIndex ) ? 0 : ( swipedToCoverWidth - smallCoverWidth ) / 2;
         auto cover = m_covers.at( index );
