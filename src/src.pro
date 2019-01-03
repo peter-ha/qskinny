@@ -129,6 +129,8 @@ HEADERS += \
     controls/QskDirtyItemFilter.h \
     controls/QskEvent.h \
     controls/QskFlickAnimator.h \
+    controls/QskFlowView.h \
+    controls/QskFlowViewSkinlet.h \
     controls/QskFocusIndicator.h \
     controls/QskFocusIndicatorSkinlet.h \
     controls/QskGesture.h \
@@ -193,6 +195,8 @@ SOURCES += \
     controls/QskDirtyItemFilter.cpp \
     controls/QskEvent.cpp \
     controls/QskFlickAnimator.cpp \
+    controls/QskFlowView.cpp \
+    controls/QskFlowViewSkinlet.cpp \
     controls/QskFocusIndicator.cpp \
     controls/QskFocusIndicatorSkinlet.cpp \
     controls/QskGesture.cpp \

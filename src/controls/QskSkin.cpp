@@ -26,6 +26,9 @@ QSK_QT_PRIVATE_END
 #include "QskBox.h"
 #include "QskBoxSkinlet.h"
 
+#include "QskFlowView.h"
+#include "QskFlowViewSkinlet.h"
+
 #include "QskFocusIndicator.h"
 #include "QskFocusIndicatorSkinlet.h"
 
@@ -121,6 +124,7 @@ QskSkin::QskSkin( QObject* parent )
     declareSkinlet< QskControl, QskSkinlet >();
 
     declareSkinlet< QskBox, QskBoxSkinlet >();
+    declareSkinlet< QskFlowView, QskFlowViewSkinlet >();
     declareSkinlet< QskFocusIndicator, QskFocusIndicatorSkinlet >();
     declareSkinlet< QskGraphicLabel, QskGraphicLabelSkinlet >();
     declareSkinlet< QskListView, QskListViewSkinlet >();

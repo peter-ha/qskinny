@@ -4,6 +4,7 @@ TEMPLATE = subdirs
 
 # c++
 SUBDIRS += \
+    coverflow-simple \
     desktop \
     layouts \
     listbox \

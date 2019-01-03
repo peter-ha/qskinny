@@ -10,6 +10,6 @@ SUBDIRS += \
 
 qtHaveModule(webengine) {
 
-    SUBDIRS += \
-        webview
+    #SUBDIRS += \
+        #webview
 }
