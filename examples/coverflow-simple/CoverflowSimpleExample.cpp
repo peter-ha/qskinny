@@ -18,5 +18,6 @@ CoverflowSimpleExample::CoverflowSimpleExample()
     setPreferredSize( { 800, 400 } );
 
     auto coverflow = new SimpleFlowView( contentItem() );
-    coverflow->setCurrentIndex( 2 );
+    coverflow->setCount( 20 );
+    coverflow->setCurrentIndex( 10 );
 }
