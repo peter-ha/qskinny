@@ -25,10 +25,13 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
 
     auto flowView = static_cast< const QskFlowView* >( skinnable );
 
-    auto index = flowView->currentIndex();
+    auto currentIndex = flowView->currentIndex();
     auto count = flowView->visibleCount();
-    auto startIndex = index - count / 2;
-    auto endIndex = index + count / 2;
+    auto startIndex = currentIndex - count / 2;
+    auto startIndexBounded = qMax( startIndex, 0 );
+    auto countOffset = startIndexBounded - startIndex;
+    auto endIndex = currentIndex + count / 2;
+    auto endIndexBounded = qMin( endIndex, flowView->count() - 1 );
     auto padding = 0; // ### style
 
     auto radians = qDegreesToRadians( flowView->angle() );
@@ -38,7 +41,8 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
     auto currentItemWidth = flowView->currentItemWidth();
     qreal rotatedItemWidth = currentItemWidth * scaleFactor;
 
-    for( auto a = startIndex; a <= endIndex; ++a )
+    // ### make off by one nodes invisible
+    for( auto a = startIndexBounded; a <= endIndexBounded; ++a )
     {
         auto transformNode = ( node->childCount() > a ) ? static_cast< QSGTransformNode* >( node->childAtIndex( a ) ) : new QSGTransformNode;
         auto oldCoverNode = ( transformNode->childCount() > 0 ) ? transformNode->childAtIndex( 0 ) : nullptr;
@@ -47,15 +51,15 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
         auto y = padding;
         qreal shear;
         qreal scale;
-        auto x = ( a - startIndex ) * rotatedItemWidth;
+        auto x = ( a - startIndexBounded + countOffset ) * rotatedItemWidth;
 
-        if( a < index ) // left of selected node
+        if( a < currentIndex ) // left of selected node
         {
             shear = -sine;
             scale = scaleFactor;
             y += rotatedItemWidth * sine;
         }
-        else if( a > index ) // right of selected node
+        else if( a > currentIndex ) // right of selected node
         {
             x += ( currentItemWidth - rotatedItemWidth );
             scale = scaleFactor;

@@ -1,7 +1,9 @@
 #ifndef QSKFLOWVIEW_H
 #define QSKFLOWVIEW_H
 
-#include <QskControl.h>
+#include "QskControl.h"
+#include "QskPanGestureRecognizer.h"
+#include "QskNamespace.h"
 
 class QskFlowView : public QskControl
 {
@@ -20,15 +22,27 @@ class QskFlowView : public QskControl
     int currentIndex() const;
     void setCurrentIndex( int index );
 
-    // ### make it possible to set?
+    int count() const;
+    void setCount( int count );
+
+    // ### make it possible to set the width?
     virtual qreal currentItemWidth() const;
 
     virtual QSGNode* nodeAt( int index, QSGNode* oldNode ) const = 0;
 
+protected:
+    void gestureEvent( QskGestureEvent* ) override;
+    bool gestureFilter( QQuickItem*, QEvent* ) override;
+
   private:
-    qreal m_angle;
-    int m_visibleCount;
-    int m_currentIndex;
+    qreal m_angle = 30; // ### there is something wrong with the angles (try e.g. 80 degrees)
+    int m_visibleCount = 5;
+    int m_currentIndex = -1;
+    int m_count = 0;
+
+    double m_swipeOffset = 0;
+    Qsk::Direction m_swipeDirection;
+    QskPanGestureRecognizer m_panRecognizer;
 };
 
 #endif // QSKFLOWVIEW_H
