@@ -25,6 +25,8 @@ class QskFlowView : public QskControl
     int count() const;
     void setCount( int count );
 
+    double swipeOffset() const;
+
     // ### make it possible to set the width?
     virtual qreal currentItemWidth() const;
 
