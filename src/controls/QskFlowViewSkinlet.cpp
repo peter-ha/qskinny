@@ -39,15 +39,31 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
     // For now, allow only swiping one element at a time (should be changed later):
     auto swipeCompletedFraction = ( flowView->swipeOffset() > currentItemWidth ) ? 1.0 : flowView->swipeOffset() / currentItemWidth;
 
-    auto angle = ( 1 - swipeCompletedFraction ) * flowView->angle();
+    // the index of the cover we are currently moving (not the active one); either the one left
+    // or right of the active one:
+    int movedIndex = -1;
 
-    auto radians = qDegreesToRadians( angle );
-    auto sine = qSin( radians );
-    auto cosine = qCos( radians );
-    qreal scaleFactor = cosine;
-    qreal rotatedItemWidth = currentItemWidth * scaleFactor;
+    if( flowView->currentIndex() > 0 && flowView->swipeOffset() > 0 )
+    {
+        movedIndex = flowView->currentIndex() - 1;
+    }
+    else if( flowView->currentIndex() < flowView->count() - 1 && flowView->swipeOffset() < 0 )
+    {
+        movedIndex = flowView->currentIndex() + 1;
+    }
 
-    qDebug() << "swipe offset:" << flowView->swipeOffset() << "width:" << currentItemWidth << "frac:" << swipeCompletedFraction;
+    auto movedElementAngle = ( 1 - swipeCompletedFraction ) * flowView->angle();
+    auto movedElementRadians = qDegreesToRadians( movedElementAngle );
+    auto movedElementSine = qSin( movedElementRadians );
+    auto movedElementCosine = qCos( movedElementRadians );
+    qreal movedElementScaleFactor = movedElementCosine;
+    qreal movedElementWidth = currentItemWidth * movedElementScaleFactor;
+
+    auto nonActiveElementRadians = qDegreesToRadians( flowView->angle() );
+    auto nonActiveElementSine = qSin( nonActiveElementRadians );
+    auto nonActiveElementCosine = qCos( nonActiveElementRadians );
+    qreal nonActiveElementScaleFactor = nonActiveElementCosine;
+    qreal nonActiveElementWidth = currentItemWidth * nonActiveElementScaleFactor;
 
     // ### make off by one nodes invisible
     for( auto a = startIndexBounded; a <= endIndexBounded; ++a )
@@ -59,17 +75,30 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
         auto y = padding;
         qreal shear;
         qreal scale;
-        auto x = ( a - startIndexBounded + countOffset ) * rotatedItemWidth;
+        auto x = ( a - startIndexBounded + countOffset ) * movedElementWidth;
+        qreal sine, scaleFactor, elementWidth;
+
+        if( a == movedIndex )
+        {
+            sine = movedElementSine;
+            scaleFactor = movedElementScaleFactor;
+            elementWidth = movedElementWidth;
+        }
+        else {
+            sine = nonActiveElementSine;
+            scaleFactor = nonActiveElementScaleFactor;
+            elementWidth = nonActiveElementWidth;
+        }
 
         if( a < currentIndex ) // left of selected node
         {
             shear = -sine;
             scale = scaleFactor;
-            y += rotatedItemWidth * sine;
+            y += elementWidth * sine;
         }
         else if( a > currentIndex ) // right of selected node
         {
-            x += ( currentItemWidth - rotatedItemWidth );
+            x += ( currentItemWidth - elementWidth );
             scale = scaleFactor;
             shear = sine;
         }
@@ -77,7 +106,7 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
         {
             shear = 0;
             scale = 1;
-            y += rotatedItemWidth * sine;
+            y += elementWidth * sine;
         }
 
         QTransform translateTransform;
