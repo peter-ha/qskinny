@@ -34,20 +34,12 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
     auto endIndexBounded = qMin( endIndex, flowView->count() - 1 );
     auto padding = 0; // ### style
 
-    auto currentItemWidth = flowView->currentItemWidth();
-
-    // For now, allow only swiping one element at a time (should be changed later):
-    auto swipeCompletedFraction = ( flowView->swipeOffset() > currentItemWidth ) ? 1.0 : flowView->swipeOffset() / currentItemWidth;
-
-    auto angle = ( 1 - swipeCompletedFraction ) * flowView->angle();
-
-    auto radians = qDegreesToRadians( angle );
+    auto radians = qDegreesToRadians( flowView->angle() );
     auto sine = qSin( radians );
     auto cosine = qCos( radians );
     qreal scaleFactor = cosine;
+    auto currentItemWidth = flowView->currentItemWidth();
     qreal rotatedItemWidth = currentItemWidth * scaleFactor;
-
-    qDebug() << "swipe offset:" << flowView->swipeOffset() << "width:" << currentItemWidth << "frac:" << swipeCompletedFraction;
 
     // ### make off by one nodes invisible
     for( auto a = startIndexBounded; a <= endIndexBounded; ++a )
