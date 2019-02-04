@@ -25,6 +25,7 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
 
     auto flowView = static_cast< const QskFlowView* >( skinnable );
 
+    // ### make those variables const
     auto currentIndex = flowView->currentIndex();
     auto count = flowView->visibleCount();
     auto startIndex = currentIndex - count / 2;
@@ -41,7 +42,18 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
     auto currentItemWidth = flowView->currentItemWidth();
     qreal rotatedItemWidth = currentItemWidth * scaleFactor;
 
-    // ### make off by one nodes invisible
+    // reuse scene graph nodes when swiping by removing and reinserting them:
+    if( flowView->swipeDirection() == Qsk::RightToLeft )
+    {
+        qDebug() << "rtl" << startIndexBounded << currentIndex << endIndexBounded;
+//        qDebug() << "visible:" <<
+    }
+    else if( flowView->swipeDirection() == Qsk::LeftToRight )
+    {
+        qDebug() << "ltr" << startIndexBounded << endIndexBounded;
+    }
+
+    // layout visible nodes:
     for( auto a = startIndexBounded; a <= endIndexBounded; ++a )
     {
         auto transformNode = ( node->childCount() > a ) ? static_cast< QSGTransformNode* >( node->childAtIndex( a ) ) : new QSGTransformNode;

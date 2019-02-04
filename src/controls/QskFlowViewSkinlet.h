@@ -18,7 +18,6 @@ class QSK_EXPORT QskFlowViewSkinlet : public QskSkinlet
 
   protected:
     QSGNode* updateSubNode( const QskSkinnable*, quint8 nodeRole, QSGNode* ) const override;
-
 };
 
 #endif // QSKFLOWVIEWSKINLET_H
