@@ -17,7 +17,7 @@ class QSK_EXPORT QskFlowViewSkinlet : public QskSkinlet
     virtual ~QskFlowViewSkinlet() override;
 
   protected:
-    QSGNode* updateSubNode( const QskSkinnable*, quint8 nodeRole, QSGNode* ) const override;
+    QSGNode* updateSubNode( const QskSkinnable*, quint8, QSGNode* ) const override;
 };
 
 #endif // QSKFLOWVIEWSKINLET_H

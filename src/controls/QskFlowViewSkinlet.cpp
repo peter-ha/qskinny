@@ -7,6 +7,36 @@
 #include <QTransform>
 #include <QtMath>
 
+
+class QskFlowViewNode : public QSGNode
+{
+public:
+    QskFlowViewNode() : QSGNode()
+    {
+    }
+
+    void setVisibleIndexes( int left, int right )
+    {
+        m_left = left;
+        m_right = right;
+    }
+
+    int leftVisibleIndex() const
+    {
+        return m_left;
+    }
+
+    int rightVisibleIndex() const
+    {
+        return m_right;
+    }
+
+private:
+    int m_left = -1;
+    int m_right = -1;
+};
+
+
 QskFlowViewSkinlet::QskFlowViewSkinlet( QskSkin* skin ) : QskSkinlet( skin )
 {
     setNodeRoles( { CoversRole } );
@@ -18,9 +48,11 @@ QskFlowViewSkinlet::~QskFlowViewSkinlet()
 
 QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint8 /*nodeRole*/, QSGNode* node ) const
 {
-    if( node == nullptr )
+    auto flowViewNode = static_cast< QskFlowViewNode* >( node );
+
+    if( flowViewNode == nullptr )
     {
-        node = new QSGNode();
+        flowViewNode = new QskFlowViewNode;
     }
 
     auto flowView = static_cast< const QskFlowView* >( skinnable );
@@ -28,11 +60,11 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
     // ### make those variables const
     auto currentIndex = flowView->currentIndex();
     auto count = flowView->visibleCount();
-    auto startIndex = currentIndex - count / 2;
-    auto startIndexBounded = qMax( startIndex, 0 );
-    auto countOffset = startIndexBounded - startIndex;
-    auto endIndex = currentIndex + count / 2;
-    auto endIndexBounded = qMin( endIndex, flowView->count() - 1 );
+    auto startIndexUnbounded = currentIndex - count / 2;
+    auto startIndex = qMax( startIndexUnbounded, 0 );
+    auto countOffset = startIndex - startIndexUnbounded;
+    auto endIndexUnbounded = currentIndex + count / 2;
+    auto endIndex = qMin( endIndexUnbounded, flowView->count() - 1 );
     auto padding = 0; // ### style
 
     auto radians = qDegreesToRadians( flowView->angle() );
@@ -43,27 +75,45 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
     qreal rotatedItemWidth = currentItemWidth * scaleFactor;
 
     // reuse scene graph nodes when swiping by removing and reinserting them:
+    auto oldStartIndex = flowViewNode->leftVisibleIndex();
+    auto oldEndIndex = flowViewNode->rightVisibleIndex();
+
+    if( oldStartIndex > -1 && oldStartIndex < startIndex )
+    {
+        for( int a = oldStartIndex; a < startIndex; ++a )
+        {
+            qDebug() << "reinsert node" << a << "at the end";
+        }
+    }
+
+    if( oldEndIndex > -1 && oldEndIndex > endIndex )
+    {
+        for( int a = endIndex; a < oldEndIndex; ++a )
+        {
+            qDebug() << "reinsert node" << a << "at the front";
+        }
+    }
+
     if( flowView->swipeDirection() == Qsk::RightToLeft )
     {
-        qDebug() << "rtl" << startIndexBounded << currentIndex << endIndexBounded;
-//        qDebug() << "visible:" <<
+//        qDebug() << "rtl" << startIndex << oldStartIndex;
     }
     else if( flowView->swipeDirection() == Qsk::LeftToRight )
     {
-        qDebug() << "ltr" << startIndexBounded << endIndexBounded;
+//        qDebug() << "ltr" << startIndex << oldStartIndex;
     }
 
     // layout visible nodes:
-    for( auto a = startIndexBounded; a <= endIndexBounded; ++a )
+    for( auto a = startIndex; a <= endIndex; ++a )
     {
-        auto transformNode = ( node->childCount() > a ) ? static_cast< QSGTransformNode* >( node->childAtIndex( a ) ) : new QSGTransformNode;
+        auto transformNode = ( flowViewNode->childCount() > a ) ? static_cast< QSGTransformNode* >( flowViewNode->childAtIndex( a ) ) : new QSGTransformNode;
         auto oldCoverNode = ( transformNode->childCount() > 0 ) ? transformNode->childAtIndex( 0 ) : nullptr;
         auto coverNode = flowView->nodeAt( a, oldCoverNode );
 
         auto y = padding;
         qreal shear;
         qreal scale;
-        auto x = ( a - startIndexBounded + countOffset ) * rotatedItemWidth;
+        auto x = ( a - startIndex + countOffset ) * rotatedItemWidth;
 
         if( a < currentIndex ) // left of selected node
         {
@@ -102,11 +152,13 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
             transformNode->appendChildNode( coverNode );
         }
 
-        if( node->childCount() <= a )
+        if( flowViewNode->childCount() <= a )
         {
-            node->appendChildNode( transformNode );
+            flowViewNode->appendChildNode( transformNode );
         }
     }
 
-    return node;
+    flowViewNode->setVisibleIndexes( startIndex, endIndex );
+
+    return flowViewNode;
 }
