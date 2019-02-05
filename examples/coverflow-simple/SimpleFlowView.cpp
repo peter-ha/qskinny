@@ -28,6 +28,7 @@ QSGNode* SimpleFlowView::nodeAt( int index, QSGNode* oldNode ) const
 
         if( simpleRectNode->color() != color )
         {
+            qDebug() << "setting color to" << color;
             simpleRectNode->setColor( color );
         }
 

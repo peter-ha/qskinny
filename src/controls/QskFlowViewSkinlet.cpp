@@ -48,23 +48,27 @@ QskFlowViewSkinlet::~QskFlowViewSkinlet()
 
 QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint8 /*nodeRole*/, QSGNode* node ) const
 {
-    auto flowViewNode = static_cast< QskFlowViewNode* >( node );
+    auto rootNode = static_cast< QskFlowViewNode* >( node );
 
-    if( flowViewNode == nullptr )
+    if( rootNode == nullptr )
     {
-        flowViewNode = new QskFlowViewNode;
+        rootNode = new QskFlowViewNode;
     }
 
     auto flowView = static_cast< const QskFlowView* >( skinnable );
 
     // ### make those variables const
-    auto currentIndex = flowView->currentIndex();
+    auto currentActiveIndex = flowView->currentIndex();
     auto count = flowView->visibleCount();
-    auto startIndexUnbounded = currentIndex - count / 2;
+
+    auto startIndexUnbounded = currentActiveIndex - count / 2;
     auto startIndex = qMax( startIndexUnbounded, 0 );
-    auto countOffset = startIndex - startIndexUnbounded;
-    auto endIndexUnbounded = currentIndex + count / 2;
+    auto leftOffset = startIndex - startIndexUnbounded; // when reaching the beginning of the list
+
+    auto endIndexUnbounded = currentActiveIndex + count / 2;
     auto endIndex = qMin( endIndexUnbounded, flowView->count() - 1 );
+    auto rightOffset = endIndexUnbounded - endIndex; // when reaching the end of the list
+
     auto padding = 0; // ### style
 
     auto radians = qDegreesToRadians( flowView->angle() );
@@ -75,53 +79,78 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
     qreal rotatedItemWidth = currentItemWidth * scaleFactor;
 
     // reuse scene graph nodes when swiping by removing and reinserting them:
-    auto oldStartIndex = flowViewNode->leftVisibleIndex();
-    auto oldEndIndex = flowViewNode->rightVisibleIndex();
+    auto oldStartIndex = rootNode->leftVisibleIndex();
+    auto oldEndIndex = rootNode->rightVisibleIndex();
 
-    if( oldStartIndex > -1 && oldStartIndex < startIndex )
+    if( oldStartIndex > -1 )
     {
-        for( int a = oldStartIndex; a < startIndex; ++a )
+        // scrolling to the left:
+
+        for( int a = 0; a < startIndex - oldStartIndex; ++a )
         {
-            qDebug() << "reinsert node" << a << "at the end";
+            auto childNode = rootNode->firstChild();
+            rootNode->removeChildNode( childNode );
+            rootNode->appendChildNode( childNode );
         }
     }
 
-    if( oldEndIndex > -1 && oldEndIndex > endIndex )
+    if( oldEndIndex > -1 )
     {
-        for( int a = endIndex; a < oldEndIndex; ++a )
+        // scrolling to the right:
+
+        for( int a = 0; a < oldEndIndex - endIndex; ++a )
         {
-            qDebug() << "reinsert node" << a << "at the front";
+            auto childNode = rootNode->lastChild();
+            rootNode->removeChildNode( childNode );
+            rootNode->prependChildNode( childNode );
         }
     }
 
-    if( flowView->swipeDirection() == Qsk::RightToLeft )
+
+    // if at the beginning or the end of the list, we might have to remove some nodes:
+
+    // Only remove nodes if we have not reached the right number already:
+    if( flowView->visibleCount() - rootNode->childCount() < leftOffset )
     {
-//        qDebug() << "rtl" << startIndex << oldStartIndex;
+        for( int a = 0; a < leftOffset; ++a )
+        {
+            auto childNode = rootNode->firstChild();
+            rootNode->removeChildNode( childNode );
+        }
     }
-    else if( flowView->swipeDirection() == Qsk::LeftToRight )
+
+    if( flowView->visibleCount() - rootNode->childCount() < rightOffset )
     {
-//        qDebug() << "ltr" << startIndex << oldStartIndex;
+        for( int a = 0; a < rightOffset; ++a )
+        {
+            auto childNode = rootNode->lastChild();
+            rootNode->removeChildNode( childNode );
+        }
     }
+
 
     // layout visible nodes:
-    for( auto a = startIndex; a <= endIndex; ++a )
+
+    for( auto a = 0; a <= endIndex - startIndex; ++a )
     {
-        auto transformNode = ( flowViewNode->childCount() > a ) ? static_cast< QSGTransformNode* >( flowViewNode->childAtIndex( a ) ) : new QSGTransformNode;
+        const auto flowViewIndex = startIndex + a;
+
+        auto transformNode = ( rootNode->childCount() > a ) ? static_cast< QSGTransformNode* >( rootNode->childAtIndex( a ) ) : new QSGTransformNode;
         auto oldCoverNode = ( transformNode->childCount() > 0 ) ? transformNode->childAtIndex( 0 ) : nullptr;
-        auto coverNode = flowView->nodeAt( a, oldCoverNode );
+        auto coverNode = flowView->nodeAt( flowViewIndex, oldCoverNode );
 
         auto y = padding;
         qreal shear;
         qreal scale;
-        auto x = ( a - startIndex + countOffset ) * rotatedItemWidth;
+        auto x = ( a + leftOffset ) * rotatedItemWidth;
 
-        if( a < currentIndex ) // left of selected node
+        if( flowViewIndex < currentActiveIndex ) // left of selected node
         {
             shear = -sine;
             scale = scaleFactor;
             y += rotatedItemWidth * sine;
         }
-        else if( a > currentIndex ) // right of selected node
+        else if( flowViewIndex > currentActiveIndex ) // right of selected node
         {
             x += ( currentItemWidth - rotatedItemWidth );
             scale = scaleFactor;
@@ -152,13 +181,13 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
             transformNode->appendChildNode( coverNode );
         }
 
-        if( flowViewNode->childCount() <= a )
+        if( rootNode->childCount() <= a )
         {
-            flowViewNode->appendChildNode( transformNode );
+            rootNode->appendChildNode( transformNode );
         }
     }
 
-    flowViewNode->setVisibleIndexes( startIndex, endIndex );
+    rootNode->setVisibleIndexes( startIndex, endIndex );
 
-    return flowViewNode;
+    return rootNode;
 }

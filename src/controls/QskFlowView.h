@@ -25,7 +25,7 @@ class QskFlowView : public QskControl
     int count() const;
     void setCount( int count );
 
-    Qsk::Direction swipeDirection() const;
+    Qsk::Direction swipeDirection() const; // ### remove
 
     // ### make it possible to set the width?
     virtual qreal currentItemWidth() const;
