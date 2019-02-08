@@ -58,6 +58,11 @@ void QskFlowView::setCount(int count)
     m_count = count;
 }
 
+double QskFlowView::swipeOffset() const
+{
+    return m_swipeOffset;
+}
+
 qreal QskFlowView::currentItemWidth() const
 {
     auto radians = qDegreesToRadians( angle() );

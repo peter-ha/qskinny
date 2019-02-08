@@ -57,7 +57,24 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
 
     const auto flowView = static_cast< const QskFlowView* >( skinnable );
 
+    auto swipeFraction = flowView->swipeOffset() / flowView->currentItemWidth();
+    // for now, only support swiping one element at a time (### allow fast swipes)
+    swipeFraction = qMin( swipeFraction, 1.0 );
+    swipeFraction = qMax( swipeFraction, -1.0 );
+
     const auto currentActiveIndex = flowView->currentIndex();
+
+    int swipedToIndex = -1;
+
+    if( flowView->swipeOffset() < 0 && currentActiveIndex > 0 )
+    {
+        swipedToIndex = currentActiveIndex - 1;
+    }
+    else if( flowView->swipeOffset() > 0 && currentActiveIndex < flowView->count() - 1 )
+    {
+        swipedToIndex = currentActiveIndex + 1;
+    }
+
     const auto count = flowView->visibleCount();
 
     const auto startIndexUnbounded = currentActiveIndex - count / 2;
@@ -74,8 +91,12 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
     const auto sine = qSin( radians );
     const auto cosine = qCos( radians );
     const qreal scaleFactor = cosine;
-    const auto currentItemWidth = flowView->currentItemWidth();
-    const qreal rotatedItemWidth = currentItemWidth * scaleFactor;
+    const qreal rotatedItemWidth = flowView->currentItemWidth() * scaleFactor;
+
+    const auto currentItemScaleFactor = ( 1 - qAbs( swipeFraction ) ) + qAbs( swipeFraction ) * scaleFactor;
+    const auto currentItemWidth = flowView->currentItemWidth() * currentItemScaleFactor;
+    const auto nextItemScaleFactor = qAbs( swipeFraction ) + ( 1 - qAbs( swipeFraction ) ) * scaleFactor;
+    const auto nextItemWidth = flowView->currentItemWidth() * nextItemScaleFactor;
 
     // reuse scene graph nodes when swiping by removing and reinserting them:
     const auto oldStartIndex = rootNode->leftVisibleIndex();
@@ -108,7 +129,9 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
 
     // if at the beginning or the end of the list, we might have to remove some nodes:
 
-    // Only remove nodes if we have not reached the right number of scene graph nodes already:
+    // Only remove nodes if we have not reached the right number of scene graph nodes already,
+    // otherwise we would be removing here and later inserting nodes upon every swipe even if nothing changes:
+
     if( flowView->visibleCount() - rootNode->childCount() < leftOffset )
     {
         for( int a = 0; a < leftOffset; ++a )
@@ -141,9 +164,25 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
         auto y = padding;
         qreal shear;
         qreal scale;
-        auto x = ( a + leftOffset ) * rotatedItemWidth;
+        auto x = ( a + leftOffset + swipeFraction ) * rotatedItemWidth;
 
-        if( flowViewIndex < currentActiveIndex ) // left of selected node
+        if( flowViewIndex == swipedToIndex )
+        {
+            if( swipeFraction < 0 )
+            {
+                shear = ( -1 - swipeFraction ) * sine;
+                scale = nextItemScaleFactor;
+                y += rotatedItemWidth * sine;
+            }
+            else
+            {
+                shear = ( 1 - swipeFraction ) * sine;
+                scale = nextItemScaleFactor;
+                x += currentItemWidth - rotatedItemWidth;
+                y += swipeFraction * rotatedItemWidth * sine;
+            }
+        }
+        else if( flowViewIndex < currentActiveIndex ) // left of selected node
         {
             shear = -sine;
             scale = scaleFactor;
@@ -151,15 +190,24 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
         }
         else if( flowViewIndex > currentActiveIndex ) // right of selected node
         {
-            x += ( currentItemWidth - rotatedItemWidth );
-            scale = scaleFactor;
+            x += ( currentItemWidth - rotatedItemWidth ) + ( nextItemWidth - rotatedItemWidth );
             shear = sine;
+            scale = scaleFactor;
         }
         else // selected node
         {
-            shear = 0;
-            scale = 1;
-            y += rotatedItemWidth * sine;
+            shear = -1 * swipeFraction * sine;
+            scale = currentItemScaleFactor;
+
+            if( swipeFraction > 0 )
+            {
+                y += rotatedItemWidth * sine;
+            }
+            else
+            {
+                x += nextItemWidth - rotatedItemWidth;
+                y += ( 1 + swipeFraction ) * rotatedItemWidth * sine;
+            }
         }
 
         QTransform translateTransform;
@@ -184,6 +232,7 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
         {
             rootNode->appendChildNode( transformNode );
         }
+
     }
 
     rootNode->setVisibleIndexes( startIndex, endIndex );
