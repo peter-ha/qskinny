@@ -58,15 +58,10 @@ void QskFlowView::setCount(int count)
     m_count = count;
 }
 
-Qsk::Direction QskFlowView::swipeDirection() const
-{
-    return m_swipeDirection;
-}
-
 qreal QskFlowView::currentItemWidth() const
 {
     auto radians = qDegreesToRadians( angle() );
-    qreal scaleFactor = qCos( radians ); // ### does not seem to be quite right yet for ~ 45 degrees
+    qreal scaleFactor = qCos( radians );
     auto width = contentsRect().width() / ( 1 + ( visibleCount() - 1 ) * scaleFactor );
 
     return width;

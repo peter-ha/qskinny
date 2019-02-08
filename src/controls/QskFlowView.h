@@ -25,8 +25,6 @@ class QskFlowView : public QskControl
     int count() const;
     void setCount( int count );
 
-    Qsk::Direction swipeDirection() const; // ### remove
-
     // ### make it possible to set the width?
     virtual qreal currentItemWidth() const;
 
@@ -37,7 +35,7 @@ protected:
     bool gestureFilter( QQuickItem*, QEvent* ) override;
 
   private:
-    qreal m_angle = 30; // ### there is something wrong with the angles (try e.g. 80 degrees)
+    qreal m_angle = 30;
     int m_visibleCount = 5;
     int m_currentIndex = -1;
     int m_count = 0;

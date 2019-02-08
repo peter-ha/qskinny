@@ -55,32 +55,31 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
         rootNode = new QskFlowViewNode;
     }
 
-    auto flowView = static_cast< const QskFlowView* >( skinnable );
+    const auto flowView = static_cast< const QskFlowView* >( skinnable );
 
-    // ### make those variables const
-    auto currentActiveIndex = flowView->currentIndex();
-    auto count = flowView->visibleCount();
+    const auto currentActiveIndex = flowView->currentIndex();
+    const auto count = flowView->visibleCount();
 
-    auto startIndexUnbounded = currentActiveIndex - count / 2;
-    auto startIndex = qMax( startIndexUnbounded, 0 );
-    auto leftOffset = startIndex - startIndexUnbounded; // when reaching the beginning of the list
+    const auto startIndexUnbounded = currentActiveIndex - count / 2;
+    const auto startIndex = qMax( startIndexUnbounded, 0 );
+    const auto leftOffset = startIndex - startIndexUnbounded; // when reaching the beginning of the list
 
-    auto endIndexUnbounded = currentActiveIndex + count / 2;
-    auto endIndex = qMin( endIndexUnbounded, flowView->count() - 1 );
-    auto rightOffset = endIndexUnbounded - endIndex; // when reaching the end of the list
+    const auto endIndexUnbounded = currentActiveIndex + count / 2;
+    const auto endIndex = qMin( endIndexUnbounded, flowView->count() - 1 );
+    const auto rightOffset = endIndexUnbounded - endIndex; // when reaching the end of the list
 
-    auto padding = 0; // ### style
+    const auto padding = 0; // ### style
 
-    auto radians = qDegreesToRadians( flowView->angle() );
-    auto sine = qSin( radians );
-    auto cosine = qCos( radians );
-    qreal scaleFactor = cosine;
-    auto currentItemWidth = flowView->currentItemWidth();
-    qreal rotatedItemWidth = currentItemWidth * scaleFactor;
+    const auto radians = qDegreesToRadians( flowView->angle() );
+    const auto sine = qSin( radians );
+    const auto cosine = qCos( radians );
+    const qreal scaleFactor = cosine;
+    const auto currentItemWidth = flowView->currentItemWidth();
+    const qreal rotatedItemWidth = currentItemWidth * scaleFactor;
 
     // reuse scene graph nodes when swiping by removing and reinserting them:
-    auto oldStartIndex = rootNode->leftVisibleIndex();
-    auto oldEndIndex = rootNode->rightVisibleIndex();
+    const auto oldStartIndex = rootNode->leftVisibleIndex();
+    const auto oldEndIndex = rootNode->rightVisibleIndex();
 
     if( oldStartIndex > -1 )
     {
@@ -109,7 +108,7 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
 
     // if at the beginning or the end of the list, we might have to remove some nodes:
 
-    // Only remove nodes if we have not reached the right number already:
+    // Only remove nodes if we have not reached the right number of scene graph nodes already:
     if( flowView->visibleCount() - rootNode->childCount() < leftOffset )
     {
         for( int a = 0; a < leftOffset; ++a )
