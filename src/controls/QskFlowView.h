@@ -40,6 +40,7 @@ protected:
     qreal m_angle = 30;
     int m_visibleCount = 5;
     int m_currentIndex = -1;
+    int m_oldIndex = -1;
     int m_count = 0;
 
     double m_swipeOffset = 0;

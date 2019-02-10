@@ -66,23 +66,36 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
 
     int swipedToIndex = -1;
 
-    if( flowView->swipeOffset() < 0 && currentActiveIndex > 0 )
+    if( flowView->swipeOffset() > 0 && currentActiveIndex > 0 )
     {
         swipedToIndex = currentActiveIndex - 1;
     }
-    else if( flowView->swipeOffset() > 0 && currentActiveIndex < flowView->count() - 1 )
+    else if( flowView->swipeOffset() < 0 && currentActiveIndex < flowView->count() - 1 )
     {
         swipedToIndex = currentActiveIndex + 1;
     }
 
     const auto count = flowView->visibleCount();
 
-    const auto startIndexUnbounded = currentActiveIndex - count / 2;
+    auto startIndexUnbounded = currentActiveIndex - count / 2;
+
+    if( swipeFraction > 0 )
+    {
+        startIndexUnbounded -= qCeil( swipeFraction );
+    }
+
     const auto startIndex = qMax( startIndexUnbounded, 0 );
     const auto leftOffset = startIndex - startIndexUnbounded; // when reaching the beginning of the list
 
-    const auto endIndexUnbounded = currentActiveIndex + count / 2;
+    auto endIndexUnbounded = currentActiveIndex + count / 2;
+
+    if( swipeFraction < 0 )
+    {
+        endIndexUnbounded += qCeil( qAbs( swipeFraction ) );
+    }
+
     const auto endIndex = qMin( endIndexUnbounded, flowView->count() - 1 );
+
     const auto rightOffset = endIndexUnbounded - endIndex; // when reaching the end of the list
 
     const auto padding = 0; // ### style
@@ -166,20 +179,25 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
         qreal scale;
         auto x = ( a + leftOffset + swipeFraction ) * rotatedItemWidth;
 
+        if( swipeFraction > 0.0 )
+        {
+            x -= rotatedItemWidth;
+        }
+
         if( flowViewIndex == swipedToIndex )
         {
-            if( swipeFraction < 0 )
+            if( swipeFraction > 0 )
             {
-                shear = ( -1 - swipeFraction ) * sine;
+                shear = ( -1 + swipeFraction ) * sine;
                 scale = nextItemScaleFactor;
                 y += rotatedItemWidth * sine;
             }
             else
             {
-                shear = ( 1 - swipeFraction ) * sine;
+                shear = ( 1 + swipeFraction ) * sine;
                 scale = nextItemScaleFactor;
                 x += currentItemWidth - rotatedItemWidth;
-                y += swipeFraction * rotatedItemWidth * sine;
+                y += qAbs( swipeFraction ) * rotatedItemWidth * sine;
             }
         }
         else if( flowViewIndex < currentActiveIndex ) // left of selected node
@@ -196,17 +214,17 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
         }
         else // selected node
         {
-            shear = -1 * swipeFraction * sine;
+            shear = swipeFraction * sine;
             scale = currentItemScaleFactor;
 
-            if( swipeFraction > 0 )
+            if( swipeFraction < 0 )
             {
                 y += rotatedItemWidth * sine;
             }
             else
             {
                 x += nextItemWidth - rotatedItemWidth;
-                y += ( 1 + swipeFraction ) * rotatedItemWidth * sine;
+                y += ( 1 - swipeFraction ) * rotatedItemWidth * sine;
             }
         }
 
