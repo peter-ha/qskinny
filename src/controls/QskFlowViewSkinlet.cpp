@@ -75,6 +75,11 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
         swipedToIndex = currentActiveIndex + 1;
     }
 
+    if( !qFuzzyIsNull( swipeFraction ) && ( swipedToIndex < 0 || swipedToIndex >= flowView->count() ) )
+    {
+        return rootNode; // Don't swipe before 1st or after last element
+    }
+
     const auto count = flowView->visibleCount();
 
     auto startIndexUnbounded = currentActiveIndex - count / 2;

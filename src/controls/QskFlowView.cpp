@@ -118,6 +118,8 @@ void QskFlowView::gestureEvent( QskGestureEvent* event )
                 newIndex = qMin( newIndex, count() - 1 );
                 newIndex = qMax( newIndex, 0 );
                 setCurrentIndex( newIndex );
+                m_swipeOffset = 0; // Do this before the update
+                update();
 
 //                m_data->flicker.setWindow( window() );
 //                m_data->flicker.accelerate( gesture->angle(), gesture->velocity() );
