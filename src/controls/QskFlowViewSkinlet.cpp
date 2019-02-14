@@ -57,51 +57,39 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
 
     const auto flowView = static_cast< const QskFlowView* >( skinnable );
 
-    auto swipeFraction = flowView->swipeOffset() / flowView->currentItemWidth();
-    // for now, only support swiping one element at a time (### allow fast swipes)
-    swipeFraction = qMin( swipeFraction, 1.0 );
-    swipeFraction = qMax( swipeFraction, -1.0 );
+    const auto nodesSwipeOffset = flowView->swipeOffset() / flowView->currentItemWidth();
+    const auto swipeFraction = nodesSwipeOffset - qRound( nodesSwipeOffset );
 
-    const auto currentActiveIndex = flowView->currentIndex();
+    const auto currentActiveIndex = qRound( flowView->currentIndex() - nodesSwipeOffset );
 
     int swipedToIndex = -1;
 
-    if( flowView->swipeOffset() > 0 && currentActiveIndex > 0 )
+    if( swipeFraction > 0 && currentActiveIndex > 0 )
     {
-        swipedToIndex = currentActiveIndex - 1;
+        swipedToIndex = currentActiveIndex - qCeil( swipeFraction );
     }
-    else if( flowView->swipeOffset() < 0 && currentActiveIndex < flowView->count() - 1 )
+    else if( swipeFraction < 0 && currentActiveIndex < flowView->count() - 1 )
     {
-        swipedToIndex = currentActiveIndex + 1;
+        swipedToIndex = currentActiveIndex + qCeil( qAbs( swipeFraction ) );
     }
 
-    if( !qFuzzyIsNull( swipeFraction ) && ( swipedToIndex < 0 || swipedToIndex >= flowView->count() ) )
+    if( ( rootNode->leftVisibleIndex() != -1 || rootNode->rightVisibleIndex() != -1 ) && // not rendering for the first time
+            ( ( swipedToIndex < 0 || swipedToIndex >= flowView->count() ) || // would be swiping beyond first or last
+            ( currentActiveIndex < 0 || currentActiveIndex >= flowView->count() ) ) ) // index would be beyond first or last
     {
         return rootNode; // Don't swipe before 1st or after last element
     }
 
-    const auto count = flowView->visibleCount();
 
-    auto startIndexUnbounded = currentActiveIndex - count / 2;
-
-    if( swipeFraction > 0 )
-    {
-        startIndexUnbounded -= qCeil( swipeFraction );
-    }
-
+    const auto startIndexUnbounded = qFloor( flowView->currentIndex() - ( nodesSwipeOffset + flowView->visibleCount() / 2 ) );
     const auto startIndex = qMax( startIndexUnbounded, 0 );
     const auto leftOffset = startIndex - startIndexUnbounded; // when reaching the beginning of the list
 
-    auto endIndexUnbounded = currentActiveIndex + count / 2;
 
-    if( swipeFraction < 0 )
-    {
-        endIndexUnbounded += qCeil( qAbs( swipeFraction ) );
-    }
-
+    const auto endIndexUnbounded = qCeil( flowView->currentIndex() - nodesSwipeOffset + flowView->visibleCount() / 2 );
     const auto endIndex = qMin( endIndexUnbounded, flowView->count() - 1 );
-
     const auto rightOffset = endIndexUnbounded - endIndex; // when reaching the end of the list
+
 
     const auto padding = 0; // ### style
 
@@ -118,6 +106,8 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
     // reuse scene graph nodes when swiping by removing and reinserting them:
     const auto oldStartIndex = rootNode->leftVisibleIndex();
     const auto oldEndIndex = rootNode->rightVisibleIndex();
+
+    qDebug() << "start:" << startIndex << "current:" << currentActiveIndex << "swiped to:" << swipedToIndex << "end:" << endIndex << "old end index:" << oldEndIndex;
 
     if( oldStartIndex > -1 )
     {
@@ -178,7 +168,7 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
         auto oldCoverNode = ( transformNode->childCount() > 0 ) ? transformNode->childAtIndex( 0 ) : nullptr;
         auto coverNode = flowView->nodeAt( flowViewIndex, oldCoverNode );
 
-        auto y = padding;
+        auto y = padding; // ### need to take into account some pixels from the rotation
         qreal rotateAngle;
         qreal scale;
         auto x = ( a + leftOffset + swipeFraction ) * rotatedItemWidth;

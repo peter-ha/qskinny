@@ -85,7 +85,6 @@ void QskFlowView::gestureEvent( QskGestureEvent* event )
             {
                 auto deltaX = gesture->delta().x();
                 m_swipeOffset = deltaX;
-                m_swipeDirection = ( deltaX < 0 ) ? Qsk::RightToLeft : Qsk::LeftToRight;
                 m_oldIndex = currentIndex();
                 break;
             }
@@ -110,15 +109,12 @@ void QskFlowView::gestureEvent( QskGestureEvent* event )
             }
             case QskGesture::Finished:
             {
-                // For now limit the swipe to 1 element left or right (### remove this limitation):
-                auto offset = qMin( m_swipeOffset, currentItemWidth() );
-                offset = qMax( offset, -1 * currentItemWidth() );
-
-                auto newIndex = qRound( m_oldIndex - offset / currentItemWidth() );
+                const auto nodesSwipeOffset = swipeOffset() / currentItemWidth();
+                auto newIndex = qRound( m_oldIndex - nodesSwipeOffset );
                 newIndex = qMin( newIndex, count() - 1 );
                 newIndex = qMax( newIndex, 0 );
                 setCurrentIndex( newIndex );
-                m_swipeOffset = 0; // Do this before the update
+                m_swipeOffset = 0;
                 update();
 
 //                m_data->flicker.setWindow( window() );

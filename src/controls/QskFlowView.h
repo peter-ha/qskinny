@@ -44,7 +44,6 @@ protected:
     int m_count = 0;
 
     double m_swipeOffset = 0;
-    Qsk::Direction m_swipeDirection = Qsk::TopToBottom; // initialize with impossible value
     QskPanGestureRecognizer m_panRecognizer;
 };
 
