@@ -106,7 +106,6 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
     const auto padding = 0; // ### style
 
     const auto radians = qDegreesToRadians( flowView->angle() );
-    const auto sine = qSin( radians );
     const auto cosine = qCos( radians );
     const qreal scaleFactor = cosine;
     const qreal rotatedItemWidth = flowView->currentItemWidth() * scaleFactor;
@@ -180,7 +179,7 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
         auto coverNode = flowView->nodeAt( flowViewIndex, oldCoverNode );
 
         auto y = padding;
-        qreal shear;
+        qreal rotateAngle;
         qreal scale;
         auto x = ( a + leftOffset + swipeFraction ) * rotatedItemWidth;
 
@@ -193,56 +192,50 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
         {
             if( swipeFraction > 0 )
             {
-                shear = ( -1 + swipeFraction ) * sine;
+                rotateAngle = ( -1 + swipeFraction ) * flowView->angle();
                 scale = nextItemScaleFactor;
-                y += rotatedItemWidth * sine;
             }
             else
             {
-                shear = ( 1 + swipeFraction ) * sine;
+                rotateAngle = ( 1 + swipeFraction ) * flowView->angle();
                 scale = nextItemScaleFactor;
                 x += currentItemWidth - rotatedItemWidth;
-                y += qAbs( swipeFraction ) * rotatedItemWidth * sine;
             }
         }
         else if( flowViewIndex < currentActiveIndex ) // left of selected node
         {
-            shear = -sine;
+            rotateAngle = -flowView->angle();
             scale = scaleFactor;
-            y += rotatedItemWidth * sine;
         }
         else if( flowViewIndex > currentActiveIndex ) // right of selected node
         {
             x += ( currentItemWidth - rotatedItemWidth ) + ( nextItemWidth - rotatedItemWidth );
-            shear = sine;
+            rotateAngle = flowView->angle();
             scale = scaleFactor;
         }
         else // selected node
         {
-            shear = swipeFraction * sine;
+            rotateAngle = swipeFraction * flowView->angle();
             scale = currentItemScaleFactor;
 
-            if( swipeFraction < 0 )
-            {
-                y += rotatedItemWidth * sine;
-            }
-            else
+            if( swipeFraction > 0 )
             {
                 x += nextItemWidth - rotatedItemWidth;
-                y += ( 1 - swipeFraction ) * rotatedItemWidth * sine;
             }
         }
 
         QTransform translateTransform;
         translateTransform.translate( x, y );
 
-        QTransform shearTransform;
-        shearTransform.shear( 0, shear );
+        QTransform rotateTransform;
+        rotateTransform.translate( rotatedItemWidth / 2, rotatedItemWidth / 2 );
+        rotateTransform.rotate( rotateAngle, Qt::YAxis );
+        rotateTransform.translate( -rotatedItemWidth / 2, -rotatedItemWidth / 2 );
 
         QTransform scaleTransform;
         scaleTransform.scale( scale, 1 );
 
-        auto transform = scaleTransform * shearTransform * translateTransform;
+        auto transform = scaleTransform * rotateTransform * translateTransform;
 
         transformNode->setMatrix( { transform } );
 

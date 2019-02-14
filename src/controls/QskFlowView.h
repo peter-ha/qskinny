@@ -37,7 +37,7 @@ protected:
     bool gestureFilter( QQuickItem*, QEvent* ) override;
 
   private:
-    qreal m_angle = 30;
+    qreal m_angle = 40;
     int m_visibleCount = 5;
     int m_currentIndex = -1;
     int m_oldIndex = -1;
