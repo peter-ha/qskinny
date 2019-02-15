@@ -25,26 +25,23 @@ class QskFlowView : public QskControl
     int count() const;
     void setCount( int count );
 
-    double swipeOffset() const;
+    double swipeOffset() const; // ### rename to scrollPos() to make it consistent with QskScrollView?
+    void setSwipeOffset( double offset );
 
     // ### make it possible to set the width?
     virtual qreal currentItemWidth() const;
 
     virtual QSGNode* nodeAt( int index, QSGNode* oldNode ) const = 0;
 
+    void adjustIndexAndSwipeOffset(); // called after a gesture finishes
+
 protected:
     void gestureEvent( QskGestureEvent* ) override;
     bool gestureFilter( QQuickItem*, QEvent* ) override;
 
   private:
-    qreal m_angle = 40;
-    int m_visibleCount = 5;
-    int m_currentIndex = -1;
-    int m_oldIndex = -1;
-    int m_count = 0;
-
-    double m_swipeOffset = 0;
-    QskPanGestureRecognizer m_panRecognizer;
+    class PrivateData;
+    std::unique_ptr< PrivateData > m_data;
 };
 
 #endif // QSKFLOWVIEW_H

@@ -1,14 +1,72 @@
 #include "QskFlowView.h"
 
 #include "QskEvent.h"
+#include "QskFlickAnimator.h"
 #include "QskGesture.h"
 
 #include <QtMath>
 
-QskFlowView::QskFlowView( QQuickItem* parent ) : QskControl( parent )
+namespace
 {
-    m_panRecognizer.setOrientations( Qt::Horizontal );
-    m_panRecognizer.setWatchedItem( this );
+    // ### copied from QskScrollView, need to unify those
+    class FlickAnimator final : public QskFlickAnimator
+    {
+      public:
+        FlickAnimator()
+        {
+            // skin hints: TODO
+            setDuration( 1000 );
+            setEasingCurve( QEasingCurve::OutCubic );
+        }
+
+        void setFlowView( QskFlowView* flowView )
+        {
+            m_flowView = flowView;
+        }
+
+        void translate( qreal dx, qreal /*dy*/ ) override
+        {
+            const auto pos = m_flowView->swipeOffset();
+            m_flowView->setSwipeOffset( pos + dx ); // ### here also call setCurrentIndex()
+        }
+
+        void done() override
+        {
+            m_flowView->adjustIndexAndSwipeOffset();
+        }
+
+      private:
+        QskFlowView* m_flowView;
+    };
+}
+
+class QskFlowView::PrivateData
+{
+  public:
+    PrivateData()
+    {
+    }
+
+    qreal angle = 40;
+    int visibleCount = 5;
+    int currentIndex = -1;
+    int oldIndex = -1;
+    int count = 0;
+
+    double swipeOffset = 0.0;
+    QskPanGestureRecognizer panRecognizer;
+    FlickAnimator flicker;
+};
+
+
+QskFlowView::QskFlowView( QQuickItem* parent )
+    : QskControl( parent ),
+    m_data( new PrivateData )
+{
+    m_data->flicker.setFlowView( this );
+
+    m_data->panRecognizer.setOrientations( Qt::Horizontal );
+    m_data->panRecognizer.setWatchedItem( this );
 
     setAcceptedMouseButtons( Qt::LeftButton ); // to get gesture events from the mouse as well
 }
@@ -19,48 +77,54 @@ QskFlowView::~QskFlowView()
 
 qreal QskFlowView::angle() const
 {
-    return m_angle;
+    return m_data->angle;
 }
 
 void QskFlowView::setAngle( qreal angle )
 {
-    m_angle = angle;
+    m_data->angle = angle;
 }
 
 int QskFlowView::visibleCount() const
 {
     // should be an odd number
-    return m_visibleCount;
+    return m_data->visibleCount;
 }
 
 void QskFlowView::setVisibleCount( int count )
 {
-    m_visibleCount = count;
+    m_data->visibleCount = count;
 }
 
 int QskFlowView::currentIndex() const
 {
-    return m_currentIndex;
+    return m_data->currentIndex;
 }
 
 void QskFlowView::setCurrentIndex( int index )
 {
-    m_currentIndex = index;
+    m_data->currentIndex = index;
 }
 
 int QskFlowView::count() const
 {
-    return m_count;
+    return m_data->count;
 }
 
 void QskFlowView::setCount(int count)
 {
-    m_count = count;
+    m_data->count = count;
 }
 
 double QskFlowView::swipeOffset() const
 {
-    return m_swipeOffset;
+    return m_data->swipeOffset;
+}
+
+void QskFlowView::setSwipeOffset( double offset )
+{
+    m_data->swipeOffset = offset;
+    update();
 }
 
 qreal QskFlowView::currentItemWidth() const
@@ -70,6 +134,17 @@ qreal QskFlowView::currentItemWidth() const
     auto width = contentsRect().width() / ( 1 + ( visibleCount() - 1 ) * scaleFactor );
 
     return width;
+}
+
+void QskFlowView::adjustIndexAndSwipeOffset()
+{
+    const auto nodesSwipeOffset = swipeOffset() / currentItemWidth();
+    auto newIndex = qRound( m_data->oldIndex - nodesSwipeOffset );
+    newIndex = qMin( newIndex, count() - 1 );
+    newIndex = qMax( newIndex, 0 );
+    setCurrentIndex( newIndex );
+    m_data->swipeOffset = 0; // ### do we need this here?
+    update();
 }
 
 void QskFlowView::gestureEvent( QskGestureEvent* event )
@@ -84,41 +159,21 @@ void QskFlowView::gestureEvent( QskGestureEvent* event )
             case QskGesture::Started:
             {
                 auto deltaX = gesture->delta().x();
-                m_swipeOffset = deltaX;
-                m_oldIndex = currentIndex();
+                m_data->swipeOffset = deltaX;
+                m_data->oldIndex = currentIndex();
                 break;
             }
             case QskGesture::Updated:
             {
-                // ### Try this: If velocity is above a certain threshold, swipe
-                // fast through all covers, otherwise swipe to the next one
-
-//                auto v = gesture->velocity();
-
-//                if( v > 3500 || v < -3500 )
-//                {
-//                    qDebug() << "fast swipe";
-//                    // ### here implement fast swipe
-//                }
-//                else
-//                {
-                    m_swipeOffset += gesture->delta().x();
-                    update();
-//                }
+                m_data->swipeOffset += gesture->delta().x();
+                update();
                 break;
             }
             case QskGesture::Finished:
             {
-                const auto nodesSwipeOffset = swipeOffset() / currentItemWidth();
-                auto newIndex = qRound( m_oldIndex - nodesSwipeOffset );
-                newIndex = qMin( newIndex, count() - 1 );
-                newIndex = qMax( newIndex, 0 );
-                setCurrentIndex( newIndex );
-                m_swipeOffset = 0;
-                update();
-
-//                m_data->flicker.setWindow( window() );
-//                m_data->flicker.accelerate( gesture->angle(), gesture->velocity() );
+                const auto velocity = ( m_data->swipeOffset < 0.0 ) ? -gesture->velocity() : gesture->velocity();
+                m_data->flicker.setWindow( window() );
+                m_data->flicker.accelerate( gesture->angle(), velocity );
                 break;
             }
             case QskGesture::Canceled:
@@ -146,7 +201,7 @@ bool QskFlowView::gestureFilter( QQuickItem* item, QEvent* event )
 
         bool maybeGesture = false;
 
-        const auto orientations = m_panRecognizer.orientations();
+        const auto orientations = m_data->panRecognizer.orientations();
         if ( orientations )
         {
 //            const QSizeF viewSize = viewContentsRect().size();
@@ -188,7 +243,7 @@ bool QskFlowView::gestureFilter( QQuickItem* item, QEvent* event )
         we can proceed as in b).
      */
 
-    auto& recognizer = m_panRecognizer;
+    auto& recognizer = m_data->panRecognizer;
 
     if ( event->type() == QEvent::MouseButtonPress )
     {
@@ -203,5 +258,5 @@ bool QskFlowView::gestureFilter( QQuickItem* item, QEvent* event )
 //        recognizer.setTimeout( ( item == this ) ? -1 : m_data->panRecognizerTimeout );
     }
 
-    return m_panRecognizer.processEvent( item, event );
+    return m_data->panRecognizer.processEvent( item, event );
 }

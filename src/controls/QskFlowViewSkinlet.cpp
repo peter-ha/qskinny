@@ -107,8 +107,6 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
     const auto oldStartIndex = rootNode->leftVisibleIndex();
     const auto oldEndIndex = rootNode->rightVisibleIndex();
 
-    qDebug() << "start:" << startIndex << "current:" << currentActiveIndex << "swiped to:" << swipedToIndex << "end:" << endIndex << "old end index:" << oldEndIndex;
-
     if( oldStartIndex > -1 )
     {
         // scrolling to the left:
