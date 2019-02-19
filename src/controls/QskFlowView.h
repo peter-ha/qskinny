@@ -33,7 +33,9 @@ class QskFlowView : public QskControl
 
     virtual QSGNode* nodeAt( int index, QSGNode* oldNode ) const = 0;
 
-    void adjustIndexAndSwipeOffset(); // called after a gesture finishes
+    void adjustIndexAndSwipeOffset(); // called by the flicker after a gesture finishes
+
+    int oldIndex() const;
 
 protected:
     void gestureEvent( QskGestureEvent* ) override;

@@ -60,6 +60,8 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
     const auto nodesSwipeOffset = flowView->swipeOffset() / flowView->currentItemWidth();
     const auto swipeFraction = nodesSwipeOffset - qRound( nodesSwipeOffset );
 
+//    qDebug() << "swipe offset is:" << nodesSwipeOffset;
+
     const auto currentActiveIndex = qRound( flowView->currentIndex() - nodesSwipeOffset );
 
     int swipedToIndex = -1;

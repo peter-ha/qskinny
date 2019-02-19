@@ -27,7 +27,30 @@ namespace
         void translate( qreal dx, qreal /*dy*/ ) override
         {
             const auto pos = m_flowView->swipeOffset();
-            m_flowView->setSwipeOffset( pos + dx ); // ### here also call setCurrentIndex()
+            const auto newOffset = pos + dx;
+
+            const auto nodesSwipeOffset = m_flowView->swipeOffset() / m_flowView->currentItemWidth();
+            const auto velocity = animatedVelocity();
+
+            // When coming to an end of a swipe, we need to align to an element
+            // i.e. not stop the animation in the middle:
+
+            if( velocity < 750.0 )
+            {
+                // The heuristics here can be tuned, or the "bounce back" effect could also be turned off
+                auto newIndex = qRound( m_flowView->oldIndex() - nodesSwipeOffset );
+
+                const auto targetSwipePosition = ( m_flowView->oldIndex() - newIndex ) * m_flowView->currentItemWidth();
+                const auto fractionLeftToSwipe = targetSwipePosition - m_flowView->swipeOffset();
+                const auto swipeAdjust = ( qFuzzyIsNull( velocity ) ) ? fractionLeftToSwipe : fractionLeftToSwipe / 5;
+
+                m_flowView->setSwipeOffset( newOffset + swipeAdjust );
+            }
+            else
+            {
+                m_flowView->setSwipeOffset( newOffset );
+            }
+
         }
 
         void done() override
@@ -143,8 +166,12 @@ void QskFlowView::adjustIndexAndSwipeOffset()
     newIndex = qMin( newIndex, count() - 1 );
     newIndex = qMax( newIndex, 0 );
     setCurrentIndex( newIndex );
-    m_data->swipeOffset = 0; // ### do we need this here?
-    update();
+    setSwipeOffset( 0 );
+}
+
+int QskFlowView::oldIndex() const
+{
+    return m_data->oldIndex;
 }
 
 void QskFlowView::gestureEvent( QskGestureEvent* event )
@@ -159,13 +186,13 @@ void QskFlowView::gestureEvent( QskGestureEvent* event )
             case QskGesture::Started:
             {
                 auto deltaX = gesture->delta().x();
-                m_data->swipeOffset = deltaX;
+                setSwipeOffset( deltaX );
                 m_data->oldIndex = currentIndex();
                 break;
             }
             case QskGesture::Updated:
             {
-                m_data->swipeOffset += gesture->delta().x();
+                setSwipeOffset( swipeOffset() + gesture->delta().x() );
                 update();
                 break;
             }
