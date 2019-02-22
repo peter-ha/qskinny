@@ -126,7 +126,11 @@ int QskFlowView::currentIndex() const
 
 void QskFlowView::setCurrentIndex( int index )
 {
-    m_data->currentIndex = index;
+    if( index != m_data->currentIndex )
+    {
+        m_data->currentIndex = index;
+        Q_EMIT currentIndexChanged();
+    }
 }
 
 int QskFlowView::count() const

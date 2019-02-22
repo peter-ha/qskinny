@@ -37,6 +37,9 @@ class QskFlowView : public QskControl
 
     int oldIndex() const;
 
+Q_SIGNALS:
+    void currentIndexChanged();
+
 protected:
     void gestureEvent( QskGestureEvent* ) override;
     bool gestureFilter( QQuickItem*, QEvent* ) override;
