@@ -160,6 +160,17 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
 
     // layout visible nodes:
 
+    // Always calculate the y offset value statically, so the y offset won't change
+    // when the first displayed node is the first in the list (otherwise it would produce
+    // different y offset values depending on the position).
+    QTransform yOffsetTranform;
+    yOffsetTranform.translate( rotatedItemWidth / 2, rotatedItemWidth / 2 );
+    yOffsetTranform.rotate( -flowView->angle(), Qt::YAxis );
+    yOffsetTranform.translate( -rotatedItemWidth / 2, -rotatedItemWidth / 2 );
+
+    auto coordinate = yOffsetTranform.map( QPoint( 0, 0 ) );
+    auto y = padding - coordinate.y();
+
     for( auto a = 0; a <= endIndex - startIndex; ++a )
     {
         const auto flowViewIndex = startIndex + a;
@@ -168,7 +179,6 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
         auto oldCoverNode = ( transformNode->childCount() > 0 ) ? transformNode->childAtIndex( 0 ) : nullptr;
         auto coverNode = flowView->nodeAt( flowViewIndex, oldCoverNode );
 
-        auto y = padding; // ### need to take into account some pixels from the rotation
         qreal rotateAngle;
         qreal scale;
         auto x = ( a + leftOffset + swipeFraction ) * rotatedItemWidth;
