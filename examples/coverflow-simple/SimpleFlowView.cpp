@@ -18,7 +18,8 @@ QSGNode* SimpleFlowView::nodeAt( int index, QSGNode* oldNode ) const
         auto node = new QSGSimpleRectNode( rect, color );
         return node;
     }
-    else {
+    else
+    {
         auto simpleRectNode = static_cast< QSGSimpleRectNode* >( oldNode );
 
         if( simpleRectNode->rect() != rect )
@@ -28,7 +29,6 @@ QSGNode* SimpleFlowView::nodeAt( int index, QSGNode* oldNode ) const
 
         if( simpleRectNode->color() != color )
         {
-//            qDebug() << "setting color to" << color;
             simpleRectNode->setColor( color );
         }
 

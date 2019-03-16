@@ -15,7 +15,7 @@
 
 CoverflowSimpleExample::CoverflowSimpleExample()
 {
-    setPreferredSize( { 800, 400 } );
+    setPreferredSize( { 800, 230 } );
 
     auto coverflow = new SimpleFlowView( contentItem() );
     coverflow->setMarginsHint( QskFlowView::Panel | QskAspect::Padding, 10 );

@@ -60,29 +60,31 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
     const auto nodesSwipeOffset = flowView->swipeOffset() / flowView->currentItemWidth();
     const auto swipeFraction = nodesSwipeOffset - qRound( nodesSwipeOffset );
 
-//    qDebug() << "swipe offset is:" << nodesSwipeOffset;
-
     const auto currentActiveIndex = qRound( flowView->currentIndex() - nodesSwipeOffset );
 
     int swipedToIndex = -1;
+    bool swiping = false;
 
     if( swipeFraction > 0 && currentActiveIndex > 0 )
     {
         swipedToIndex = currentActiveIndex - qCeil( swipeFraction );
+        swiping = true;
     }
     else if( swipeFraction < 0 && currentActiveIndex < flowView->count() - 1 )
     {
         swipedToIndex = currentActiveIndex + qCeil( qAbs( swipeFraction ) );
+        swiping = true;
     }
 
-    // ### there seems to be a problem with resizing:
-    if( ( rootNode->leftVisibleIndex() != -1 || rootNode->rightVisibleIndex() != -1 ) && // not rendering for the first time
-            ( ( swipedToIndex < 0 || swipedToIndex >= flowView->count() ) || // would be swiping beyond first or last
-            ( currentActiveIndex < 0 || currentActiveIndex >= flowView->count() ) ) ) // index would be beyond first or last
+    // ### there seems to be a scene graph node leftover when swiping still
+
+    if( swiping &&
+        ( ( swipedToIndex < 0 || swipedToIndex >= flowView->count() ) || // would be swiping beyond first or last
+          ( currentActiveIndex < 0 || currentActiveIndex >= flowView->count() ) ) ) // index would be beyond first or last
     {
+        // ### There is no "bounce back" effect when swiping to the first or last element
         return rootNode; // Don't swipe before 1st or after last element
     }
-
 
     const auto startIndexUnbounded = qFloor( flowView->currentIndex() - ( nodesSwipeOffset + flowView->visibleCount() / 2 ) );
     const auto startIndex = qMax( startIndexUnbounded, 0 );
@@ -140,6 +142,8 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
     // Only remove nodes if we have not reached the right number of scene graph nodes already,
     // otherwise we would be removing here and later inserting nodes upon every swipe even if nothing changes:
 
+    // ### do we need to remove nodes when visibleCount has changed or is the code below enough?
+
     if( flowView->visibleCount() - rootNode->childCount() < leftOffset )
     {
         for( int a = 0; a < leftOffset; ++a )
@@ -171,6 +175,8 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
 
     auto coordinate = yOffsetTranform.map( QPoint( 0, 0 ) );
     auto y = paddingTop - coordinate.y();
+
+    qDebug() << "end index:" << endIndex;
 
     for( auto a = 0; a <= endIndex - startIndex; ++a )
     {

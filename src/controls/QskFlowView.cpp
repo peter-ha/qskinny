@@ -1,3 +1,5 @@
+// ### add proper licenses everywhere
+
 #include "QskFlowView.h"
 
 #include "QskEvent.h"
@@ -37,6 +39,7 @@ namespace
             // When coming to an end of a swipe, we need to align to an element
             // i.e. not stop the animation in the middle:
 
+            // ### weird issue when swiping during another swipe (probably a swipe is started the values are reset)
             if( velocity < 750.0 )
             {
                 // The heuristics here can be tuned, or the "bounce back" effect could also be turned off
