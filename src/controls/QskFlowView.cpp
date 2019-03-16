@@ -6,6 +6,8 @@
 
 #include <QtMath>
 
+QSK_SUBCONTROL( QskFlowView, Panel )
+
 namespace
 {
     // ### copied from QskScrollView, need to unify those

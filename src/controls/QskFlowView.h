@@ -10,6 +10,8 @@ class QskFlowView : public QskControl
     Q_OBJECT
 
   public:
+    QSK_SUBCONTROLS( Panel )
+
     QskFlowView( QQuickItem* parent = nullptr );
     ~QskFlowView() override;
 

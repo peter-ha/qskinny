@@ -75,6 +75,7 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
         swipedToIndex = currentActiveIndex + qCeil( qAbs( swipeFraction ) );
     }
 
+    // ### there seems to be a problem with resizing:
     if( ( rootNode->leftVisibleIndex() != -1 || rootNode->rightVisibleIndex() != -1 ) && // not rendering for the first time
             ( ( swipedToIndex < 0 || swipedToIndex >= flowView->count() ) || // would be swiping beyond first or last
             ( currentActiveIndex < 0 || currentActiveIndex >= flowView->count() ) ) ) // index would be beyond first or last
@@ -93,7 +94,7 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
     const auto rightOffset = endIndexUnbounded - endIndex; // when reaching the end of the list
 
 
-    const auto padding = 0; // ### style
+    const auto paddingTop = flowView->marginsHint( QskFlowView::Panel | QskAspect::Padding ).top();
 
     const auto radians = qDegreesToRadians( flowView->angle() );
     const auto cosine = qCos( radians );
@@ -169,7 +170,7 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
     yOffsetTranform.translate( -rotatedItemWidth / 2, -rotatedItemWidth / 2 );
 
     auto coordinate = yOffsetTranform.map( QPoint( 0, 0 ) );
-    auto y = padding - coordinate.y();
+    auto y = paddingTop - coordinate.y();
 
     for( auto a = 0; a <= endIndex - startIndex; ++a )
     {
