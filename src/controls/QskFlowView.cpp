@@ -44,10 +44,12 @@ namespace
             {
                 // The heuristics here can be tuned, or the "bounce back" effect could also be turned off
                 auto newIndex = qRound( m_flowView->oldIndex() - nodesSwipeOffset );
+                qDebug() << "new index:" << newIndex << "old index:" << m_flowView->oldIndex() << pos;
 
                 const auto targetSwipePosition = ( m_flowView->oldIndex() - newIndex ) * m_flowView->currentItemWidth();
                 const auto fractionLeftToSwipe = targetSwipePosition - m_flowView->swipeOffset();
                 const auto swipeAdjust = ( qFuzzyIsNull( velocity ) ) ? fractionLeftToSwipe : fractionLeftToSwipe / 5;
+                qDebug() << "swipe adjust:" << swipeAdjust;
 
                 m_flowView->setSwipeOffset( newOffset + swipeAdjust );
             }
@@ -155,6 +157,9 @@ double QskFlowView::swipeOffset() const
 
 void QskFlowView::setSwipeOffset( double offset )
 {
+//    if( qFuzzyIsNull(offset))
+//        qDebug() << "--- updating swipe offset";
+
     m_data->swipeOffset = offset;
     update();
 }
@@ -195,6 +200,7 @@ void QskFlowView::gestureEvent( QskGestureEvent* event )
             case QskGesture::Started:
             {
                 auto deltaX = gesture->delta().x();
+                // ### there is something wrong when starting a swipe while another one is in progress
                 setSwipeOffset( deltaX );
                 m_data->oldIndex = currentIndex();
                 break;

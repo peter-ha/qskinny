@@ -88,6 +88,7 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
 
     const auto startIndexUnbounded = qFloor( flowView->currentIndex() - ( nodesSwipeOffset + flowView->visibleCount() / 2 ) );
     const auto startIndex = qMax( startIndexUnbounded, 0 );
+//    qDebug() << "start index:" << startIndex << "current index:" << flowView->currentIndex() << nodesSwipeOffset << flowView->visibleCount() / 2;
     const auto leftOffset = startIndex - startIndexUnbounded; // when reaching the beginning of the list
 
 
@@ -112,6 +113,7 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
     const auto oldStartIndex = rootNode->leftVisibleIndex();
     const auto oldEndIndex = rootNode->rightVisibleIndex();
 
+//    qDebug() << "--- start index:" << startIndex << "old start index:" << oldStartIndex << "end index:" << endIndex << "old end index:" << oldEndIndex;
     if( oldStartIndex > -1 )
     {
         // scrolling to the left:
@@ -121,6 +123,7 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
             auto childNode = rootNode->firstChild();
             rootNode->removeChildNode( childNode );
             rootNode->appendChildNode( childNode );
+            qDebug() << "start index:" << startIndex << "old start index:" << oldStartIndex << "appending at the end";
         }
     }
 
@@ -133,6 +136,7 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
             auto childNode = rootNode->lastChild();
             rootNode->removeChildNode( childNode );
             rootNode->prependChildNode( childNode );
+            qDebug() << "end index:" << endIndex << "old end index:" << oldEndIndex << "prepending to beginning";
         }
     }
 
@@ -176,8 +180,6 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
     auto coordinate = yOffsetTranform.map( QPoint( 0, 0 ) );
     auto y = paddingTop - coordinate.y();
 
-    qDebug() << "end index:" << endIndex;
-
     for( auto a = 0; a <= endIndex - startIndex; ++a )
     {
         const auto flowViewIndex = startIndex + a;
@@ -185,6 +187,8 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
         auto transformNode = ( rootNode->childCount() > a ) ? static_cast< QSGTransformNode* >( rootNode->childAtIndex( a ) ) : new QSGTransformNode;
         auto oldCoverNode = ( transformNode->childCount() > 0 ) ? transformNode->childAtIndex( 0 ) : nullptr;
         auto coverNode = flowView->nodeAt( flowViewIndex, oldCoverNode );
+
+        // We might render a node that is out of the viewport, but we might need it as soon as we swipe
 
         qreal rotateAngle;
         qreal scale;
@@ -231,6 +235,8 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
             }
         }
 
+//        qDebug() << "laying out flow view index" << flowViewIndex << x << y;
+
         QTransform translateTransform;
         translateTransform.translate( x, y );
 
@@ -257,6 +263,22 @@ QSGNode* QskFlowViewSkinlet::updateSubNode( const QskSkinnable* skinnable, quint
         }
 
     }
+
+    // ### here layout nodes left and right of the currently displayed ones
+    // in case the window has been resized or so
+//    qDebug() << "startIndex:" << startIndex << "endIndex:" << endIndex << "count:" << ( endIndex - startIndex + 1 ) << "root node count:" << rootNode->childCount();
+
+//    for( auto a = endIndex - startIndex + 1; a < rootNode->childCount(); ++a )
+//    {
+//        const auto flowViewIndex = startIndex + a;
+
+//        auto transformNode = rootNode->childAtIndex( a );
+//        // ### add more asserts everywhere
+//        Q_ASSERT( transformNode );
+//        auto oldCoverNode = ( transformNode->childCount() > 0 ) ? transformNode->childAtIndex( 0 ) : nullptr;
+//        auto coverNode = flowView->nodeAt( flowViewIndex, oldCoverNode );
+//        qDebug() << "here layout nodes right of currently displayed ones" << coverNode;
+//    }
 
     rootNode->setVisibleIndexes( startIndex, endIndex );
 
