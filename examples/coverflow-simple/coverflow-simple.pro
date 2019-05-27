@@ -1,6 +1,4 @@
-include( $${PWD}/../example.pri )
-
-TARGET = coverflow
+CONFIG += qskexample
 
 HEADERS += \
     CoverflowSimpleExample.h \

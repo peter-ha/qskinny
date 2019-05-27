@@ -5,7 +5,7 @@
 #include "QskPanGestureRecognizer.h"
 #include "QskNamespace.h"
 
-class QskFlowView : public QskControl
+class QSK_EXPORT QskFlowView : public QskControl
 {
     Q_OBJECT
 
