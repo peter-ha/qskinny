@@ -6,6 +6,7 @@ SUBDIRS += \
     gallery \
     layouts \
     listbox \
+    material \
     messagebox \
     mycontrols \
     thumbnails \

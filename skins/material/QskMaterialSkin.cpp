@@ -305,11 +305,12 @@ void Editor::setupPushButton()
     using namespace QskRgb;
     using Q = QskPushButton;
 
-    setStrutSize( Q::Panel, qskDpiScaled( 75.0 ), qskDpiScaled( 23.0 ) );
+    setStrutSize( Q::Panel, qskDpiScaled( 64.0 ), qskDpiScaled( 36.0 ) );
     setSpacing( Q::Panel, 4 );
+    setMetric( Q::Panel | MaximumHeight, qskDpiScaled( 36.0 ) );
 
     const QskMargins margin( 4, 3 );
-    const QskMargins padding( 10, 6 );
+    const QskMargins padding( 16, 0 ); // ### vertical padding?
 
     setMargin( Q::Panel, margin );
     setPadding( Q::Panel, padding );
