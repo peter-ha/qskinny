@@ -5,19 +5,25 @@
 
 #include "MaterialGallery.h"
 
+#include <QskBoxBorderMetrics.h>
 #include <QskGridBox.h>
 #include <QskPushButton.h>
 
-MaterialGallery::MaterialGallery( QQuickItem* parent ) : QskControl( parent )
+MaterialGallery::MaterialGallery( QQuickItem* parent ) : QskGridBox( parent )
 {
-    qDebug() << Q_FUNC_INFO;
+    setMargins( 30 );
+    setSpacing( 30 );
 
-    auto box = new QskGridBox( this );
+    auto containedButton = new QskPushButton( "Contained Button", this );
+    addItem( containedButton, 0, 0 );
 
-    auto containedButton = new QskPushButton( "Contained Button", box );
+    auto outlinedButton = new QskPushButton( "Outlined Button", this );
+    outlinedButton->setFlat( true );
+    // ### there should be a nicer way to make an outlined button:
+    outlinedButton->setBoxBorderMetricsHint( QskPushButton::Panel, 1 );
+    addItem( outlinedButton, 0, 1 );
 
-    box->addItem( containedButton, 0, 0 );
-
-    //setAutoFillBackground(true);
-    //setBackground(Qt::red);
+    auto textButton = new QskPushButton( "Text Button", this );
+    textButton->setFlat( true );
+    addItem( textButton, 0, 2 );
 }

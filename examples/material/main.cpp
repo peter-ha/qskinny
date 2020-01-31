@@ -25,7 +25,6 @@ int main( int argc, char* argv[] )
 
     QskWindow window;
     window.addItem( gallery );
-    window.resize( 600, 600 );
     window.show();
 
     return app.exec();

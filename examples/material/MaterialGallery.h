@@ -6,9 +6,9 @@
 #ifndef MATERIAL_GALLERY_H
 #define MATERIAL_GALLERY_H
 
-#include <QskControl.h>
+#include <QskGridBox.h>
 
-class MaterialGallery : public QskControl
+class MaterialGallery : public QskGridBox
 {
     Q_OBJECT
 
