@@ -136,14 +136,14 @@ void Editor::setupPushButton()
     setColor( Q::Text | Q::Flat, m_data->palette.baseColor );
     setFontRole( Q::Text, MediumFont );
     setAlignment( Q::Text, Qt::AlignCenter );
-    setBoxShape( QskPushButton::Panel, 4 );
+    setBoxShape( Q::Panel, 4 );
 
     // for outlined buttons:
-    setBoxBorderColors(QskPushButton::Panel | Q::Flat, { m_data->palette.baseColor } );
-    setStrutSize( Q::Handle | Q::Pressed, extentSize );
+    setBoxBorderColors(Q::Panel | Q::Flat, { m_data->palette.baseColor } );
 
-    // when flicking
-    setAnimation( Q::Panel | A::Metric, QskAnimationHint( 200, QEasingCurve::InCubic ) );
+    setMetric( Q::Graphic | MinimumHeight, 18 );
+    setMetric( Q::Graphic | MaximumHeight, 18 );
+    setMetric( Q::Graphic | Position, 18 );
     setStrutSize( Q::VerticalScrollHandle, 0.0, handleExtent );
 
     setGradient( Q::TitleBarPanel, m_pal.darker200 );
