@@ -127,7 +127,8 @@ void Editor::setupPushButton()
 
     const QskMargins padding( 16, 0 ); // ### vertical padding? ### Depends on icon
 
-    setPadding( Q::Panel, QskMargins( 10, 6 ) );
+    setMargins( Q::Panel | Padding, padding ); // ### remove, use text and graphics margins instead
+    setMargins( Q::Text | Padding, 16 );
 
     setGradient( Q::Panel, { "#6200EE" } );
     setGradient( Q::Panel | Q::Flat, Qt::white );
@@ -141,10 +142,9 @@ void Editor::setupPushButton()
     // for outlined buttons:
     setBoxBorderColors(Q::Panel | Q::Flat, { m_data->palette.baseColor } );
 
-    setMetric( Q::Graphic | MinimumHeight, 18 );
-    setMetric( Q::Graphic | MaximumHeight, 18 );
-    setMetric( Q::Graphic | Position, 18 );
-    setStrutSize( Q::VerticalScrollHandle, 0.0, handleExtent );
+    // graphics for buttons:
+    setSkinHint( Q::Graphic | Alignment, Qt::AlignLeft );
+    setMetric( QskPushButton::Panel | QskAspect::Spacing, 8 );
 
     setGradient( Q::TitleBarPanel, m_pal.darker200 );
     setGradient( Q::TitleBarPanel | Q::Focused, m_pal.accentColor );

@@ -35,6 +35,8 @@ MaterialGallery::MaterialGallery( QQuickItem* parent ) : QskGridBox( parent )
 
     auto containedButtonWithIcon = new QskPushButton( "Contained button with icon", this );
     containedButtonWithIcon->setGraphic( QskGraphicIO::read( QStringLiteral( ":/qvg/error_outline-24px.qvg" ) ) );
+    containedButtonWithIcon->setGraphicSourceSize( { 18, 18 }); // ### we should do that in the skin
+    containedButtonWithIcon->setSizePolicy( Qt::Horizontal, QskSizePolicy::Maximum );
     addItem( containedButtonWithIcon, 1, 0 );
 
     auto outlinedButtonWithIcon = new QskPushButton( "Outlined button with icon", this );
