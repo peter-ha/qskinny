@@ -10,6 +10,7 @@
 #include <QskProgressBar.h>
 #include <QskBoxBorderColors.h>
 #include <QskBoxBorderMetrics.h>
+#include <QskColorFilter.h>
 #include <QskFunctions.h>
 #include <QskMargins.h>
 #include <QskPushButton.h>
@@ -146,12 +147,12 @@ void Editor::setupPushButton()
     setSkinHint( Q::Graphic | Alignment, Qt::AlignLeft );
     setMetric( QskPushButton::Panel | QskAspect::Spacing, 8 );
 
-    setGradient( Q::TitleBarPanel, m_pal.darker200 );
-    setGradient( Q::TitleBarPanel | Q::Focused, m_pal.accentColor );
-    setAlignment( Q::TitleBarText, Qt::AlignLeft | Qt::AlignVCenter );
-class QskMaterialSkin::PrivateData
-{
-  public:
+
+    setGraphicRole( Q::Graphic, GraphicRoleContained );
+    QskColorFilter containedFilter;
+    const auto tc = m_data->palette.textColor;
+    containedFilter.addColorSubstitution( Qt::black, qRgb( tc.red(), tc.green(), tc.blue() ) );
+    setGraphicFilter( GraphicRoleContained, containedFilter );
     ColorPalette palette;
 };
 

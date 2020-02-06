@@ -16,6 +16,12 @@ class QSK_MATERIAL_EXPORT QskMaterialSkin : public QskSkin
 
     using Inherited = QskSkin;
 
+    enum GraphicRole
+    {
+        GraphicRoleContained,
+        GraphicRoleOutlined
+    };
+
   public:
     QskMaterialSkin( QObject* parent = nullptr );
     ~QskMaterialSkin() override;
