@@ -11,8 +11,7 @@ QRCFILES += \
     icons.qrc
 
 SVGSOURCES = \
-    icons/error-24px.svg \
-    icons/error_outline-24px.svg
+    icons/ic_star_rate_18px.svg
 
 ###########
 # The rcc file includes the precompiled SVGs and so we need to build

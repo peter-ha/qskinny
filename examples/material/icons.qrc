@@ -2,8 +2,7 @@
 <RCC version="1.0">
 
     <qresource>
-        <file>qvg/error-24px.qvg</file>
-        <file>qvg/error_outline-24px.qvg</file>
+        <file>qvg/ic_star_rate_18px.qvg</file>
     </qresource>
 
 </RCC>
