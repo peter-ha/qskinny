@@ -159,20 +159,20 @@ void Editor::setupPushButton()
     QskColorFilter outlinedFilter;
     outlinedFilter.addColorSubstitution( Qt::black, qRgb( bc.red(), bc.green(), bc.blue() ) );
     setGraphicFilter( GraphicRoleOutlined, outlinedFilter );
-{
-    m_data->palette = ColorPalette( QskRgb::Grey100,
-        QskRgb::Blue500, QskRgb::White );
 
-    // Default theme colors
-    setupFonts( "Roboto" );
+    // Pressed / hover states:
+    auto pressedColor = m_data->palette.baseColor;
+    pressedColor.setAlpha( 100 );
+    setGradient( QskPushButton::Panel | QskPushButton::Pressed, pressedColor );
+    setGradient( QskPushButton::Panel | Q::Flat | QskPushButton::Pressed, pressedColor );
 
-    auto buttonFont = font( QskSkin::DefaultFont );
-    buttonFont.setCapitalization( QFont::AllUppercase );
-    setFont( ButtonFontRole, buttonFont );
+    auto hoveredContainedColor = m_data->palette.baseColor;
+    hoveredContainedColor.setAlpha( 230 );
+    setGradient( QskPushButton::Panel | QskPushButton::Hovered, hoveredContainedColor );
 
-    Editor editor( &hintTable(), m_data->palette );
-    editor.setup();
-}
+    auto hoveredOutlinedColor = m_data->palette.baseColor;
+    hoveredOutlinedColor.setAlpha( 20 );
+    setGradient( QskPushButton::Panel | Q::Flat | QskPushButton::Hovered, hoveredOutlinedColor );
 
 QskMaterialSkin::~QskMaterialSkin()
 {
