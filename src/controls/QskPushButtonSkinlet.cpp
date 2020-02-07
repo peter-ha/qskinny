@@ -75,8 +75,6 @@ QRectF QskPushButtonSkinlet::textRect(
 
     auto r = button->subControlContentsRect( contentsRect, QskPushButton::Panel );
 
-    const auto originalRect = r;
-
     if ( button->hasGraphic() )
     {
         const auto alignment = button->flagHint< Qt::Alignment >(
@@ -87,7 +85,8 @@ QRectF QskPushButtonSkinlet::textRect(
                 const auto graphicsRect = subControlRect( button, contentsRect, QskPushButton::Graphic );
                 const auto spacing = button->metric( QskPushButton::Panel | QskAspect::Spacing );
                 r.setX( r.x() + graphicsRect.width() + spacing );
-                r.setWidth( originalRect.width() - graphicsRect.width() );
+                // ### Why is this necessary? The right edge shouldn't be changed...
+                r.setWidth( r.width() + graphicsRect.width() - button->marginsHint( QskPushButton::Graphic | QskAspect::Padding ).left() );
                 break;
             }
             default: { // Top

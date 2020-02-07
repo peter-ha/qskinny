@@ -34,16 +34,13 @@ MaterialGallery::MaterialGallery( QQuickItem* parent ) : QskGridBox( parent )
 
     const auto graphic = QskGraphicIO::read( QStringLiteral( ":/qvg/ic_star_rate_18px.qvg" ) );
 
-    auto containedButtonWithIcon = new QskPushButton( "Button", this );
-    containedButtonWithIcon->setSizePolicy( Qt::Horizontal, QskSizePolicy::Maximum );
+    auto containedButtonWithIcon = new QskPushButton( "Contained Button", this );
     containedButtonWithIcon->setGraphic( graphic );
     // The spec actually says 18 pixels for the icon, but 17 resembles more closely what is rendered
     containedButtonWithIcon->setGraphicSourceSize( { 18, 18 } ); // ### we should do that in the skin
-    containedButtonWithIcon->setSizePolicy( Qt::Horizontal, QskSizePolicy::Maximum );
     addItem( containedButtonWithIcon, 1, 0 );
 
     auto outlinedButtonWithIcon = new QskPushButton( "Outlined Button", this );
-    outlinedButtonWithIcon->setSizePolicy( Qt::Horizontal, QskSizePolicy::Maximum );
     outlinedButtonWithIcon->setFlat( true );
     outlinedButtonWithIcon->setGraphic( graphic );
     outlinedButtonWithIcon->setGraphicSourceSize( { 18, 18 } );
@@ -51,9 +48,8 @@ MaterialGallery::MaterialGallery( QQuickItem* parent ) : QskGridBox( parent )
     addItem( outlinedButtonWithIcon, 1, 1 );
 
     auto textButtonWithIcon = new QskPushButton( "Text button", this );
-    textButtonWithIcon->setSizePolicy( Qt::Horizontal, QskSizePolicy::Maximum );
     textButtonWithIcon->setFlat( true );
     textButtonWithIcon->setGraphic( graphic );
-    textButtonWithIcon->setGraphicSourceSize( { 17, 17 } );
+    textButtonWithIcon->setGraphicSourceSize( { 18, 18 } );
     addItem( textButtonWithIcon, 1, 2 );
 }
