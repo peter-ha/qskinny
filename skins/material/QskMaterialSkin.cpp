@@ -126,10 +126,10 @@ void Editor::setupPushButton()
 
     setMetric( Q::Panel | MaximumHeight, qskDpiScaled( 36.0 ) );
 
-    const QskMargins padding( 16, 0 ); // ### vertical padding? ### Depends on icon
+    const QskMargins padding( 16, 0 ); // ### vertical padding?
 
     setMargins( Q::Panel | Padding, padding ); // ### remove, use text and graphics margins instead
-    setMargins( Q::Text | Padding, 16 );
+//    setMargins( Q::Text | Padding, 16 );
 
     setGradient( Q::Panel, { "#6200EE" } );
     setGradient( Q::Panel | Q::Flat, Qt::white );
@@ -146,7 +146,7 @@ void Editor::setupPushButton()
     // graphics for buttons:
     setSkinHint( Q::Graphic | Alignment, Qt::AlignLeft );
     setMetric( QskPushButton::Panel | QskAspect::Spacing, 8 );
-
+    setMargins( Q::Graphic | Padding, { 12, 0, 0, 0 } );
 
     setGraphicRole( Q::Graphic, GraphicRoleContained );
     QskColorFilter containedFilter;

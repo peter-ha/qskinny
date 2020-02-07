@@ -89,7 +89,6 @@ QRectF QskPushButtonSkinlet::textRect(
                 r.setX( r.x() + graphicsRect.width() + spacing );
                 r.setWidth( originalRect.width() - graphicsRect.width() );
                 break;
-                // ### font metrics stuff
             }
             default: { // Top
                 qreal h = QFontMetricsF( button->effectiveFont( QskPushButton::Text ) ).height();
@@ -115,6 +114,9 @@ QRectF QskPushButtonSkinlet::graphicRect(
     switch( alignment ) {
         case Qt::AlignLeft:
         {
+            const auto padding = button->marginsHint( QskPushButton::Graphic | QskAspect::Padding );
+            // ### Hack: we let the graphics padding supersede the panel padding in case they are different
+            r.setX( padding.left() );
             break;
         }
         default:
