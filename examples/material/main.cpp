@@ -24,6 +24,7 @@ int main( int argc, char* argv[] )
     auto* gallery = new MaterialGallery();
 
     QskWindow window;
+    window.setTitle( QStringLiteral( "QSkinny Material style" ) );
     window.addItem( gallery );
     window.show();
 

@@ -35,7 +35,8 @@ MaterialGallery::MaterialGallery( QQuickItem* parent ) : QskGridBox( parent )
 
     auto containedButtonWithIcon = new QskPushButton( "Contained button with icon", this );
     containedButtonWithIcon->setGraphic( QskGraphicIO::read( QStringLiteral( ":/qvg/ic_star_rate_18px.qvg" ) ) );
-    containedButtonWithIcon->setGraphicSourceSize( { 18, 18 } ); // ### we should do that in the skin
+    // The spec actually says 18 pixels for the icon, but 17 resembles more closely what is rendered
+    containedButtonWithIcon->setGraphicSourceSize( { 17, 17 } ); // ### we should do that in the skin
     containedButtonWithIcon->setSizePolicy( Qt::Horizontal, QskSizePolicy::Maximum );
     addItem( containedButtonWithIcon, 1, 0 );
 

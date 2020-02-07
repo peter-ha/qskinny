@@ -145,8 +145,8 @@ void Editor::setupPushButton()
 
     // graphics for buttons:
     setSkinHint( Q::Graphic | Alignment, Qt::AlignLeft );
-    setMetric( QskPushButton::Panel | QskAspect::Spacing, 8 );
-    setMargins( Q::Graphic | Padding, { 12, 0, 0, 0 } );
+    setMetric( QskPushButton::Panel | QskAspect::Spacing, 3 );
+    setMargins( Q::Graphic | Padding, { 13, 0, 8, 0 } );
 
     setGraphicRole( Q::Graphic, GraphicRoleContained );
     QskColorFilter containedFilter;
