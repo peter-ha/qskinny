@@ -153,12 +153,12 @@ void Editor::setupPushButton()
     const auto tc = m_data->palette.textColor;
     containedFilter.addColorSubstitution( Qt::black, qRgb( tc.red(), tc.green(), tc.blue() ) );
     setGraphicFilter( GraphicRoleContained, containedFilter );
-    ColorPalette palette;
-};
 
-QskMaterialSkin::QskMaterialSkin( QObject* parent )
-    : Inherited( parent )
-    , m_data( new PrivateData() )
+    setGraphicRole( Q::Graphic | Q::Flat, GraphicRoleOutlined );
+    const auto bc = m_data->palette.baseColor;
+    QskColorFilter outlinedFilter;
+    outlinedFilter.addColorSubstitution( Qt::black, qRgb( bc.red(), bc.green(), bc.blue() ) );
+    setGraphicFilter( GraphicRoleOutlined, outlinedFilter );
 {
     m_data->palette = ColorPalette( QskRgb::Grey100,
         QskRgb::Blue500, QskRgb::White );

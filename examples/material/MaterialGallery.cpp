@@ -32,20 +32,28 @@ MaterialGallery::MaterialGallery( QQuickItem* parent ) : QskGridBox( parent )
     textButton->setFlat( true );
     addItem( textButton, 0, 2 );
 
+    const auto graphic = QskGraphicIO::read( QStringLiteral( ":/qvg/ic_star_rate_18px.qvg" ) );
 
-    auto containedButtonWithIcon = new QskPushButton( "Contained button with icon", this );
-    containedButtonWithIcon->setGraphic( QskGraphicIO::read( QStringLiteral( ":/qvg/ic_star_rate_18px.qvg" ) ) );
+    auto containedButtonWithIcon = new QskPushButton( "Button", this );
+    containedButtonWithIcon->setSizePolicy( Qt::Horizontal, QskSizePolicy::Maximum );
+    containedButtonWithIcon->setGraphic( graphic );
     // The spec actually says 18 pixels for the icon, but 17 resembles more closely what is rendered
-    containedButtonWithIcon->setGraphicSourceSize( { 17, 17 } ); // ### we should do that in the skin
+    containedButtonWithIcon->setGraphicSourceSize( { 18, 18 } ); // ### we should do that in the skin
     containedButtonWithIcon->setSizePolicy( Qt::Horizontal, QskSizePolicy::Maximum );
     addItem( containedButtonWithIcon, 1, 0 );
 
-    auto outlinedButtonWithIcon = new QskPushButton( "Outlined button with icon", this );
+    auto outlinedButtonWithIcon = new QskPushButton( "Outlined Button", this );
+    outlinedButtonWithIcon->setSizePolicy( Qt::Horizontal, QskSizePolicy::Maximum );
     outlinedButtonWithIcon->setFlat( true );
+    outlinedButtonWithIcon->setGraphic( graphic );
+    outlinedButtonWithIcon->setGraphicSourceSize( { 18, 18 } );
     outlinedButtonWithIcon->setBoxBorderMetricsHint( QskPushButton::Panel, 1 );
     addItem( outlinedButtonWithIcon, 1, 1 );
 
-    auto textButtonWithIcon = new QskPushButton( "Text button with icon", this );
+    auto textButtonWithIcon = new QskPushButton( "Text button", this );
+    textButtonWithIcon->setSizePolicy( Qt::Horizontal, QskSizePolicy::Maximum );
     textButtonWithIcon->setFlat( true );
+    textButtonWithIcon->setGraphic( graphic );
+    textButtonWithIcon->setGraphicSourceSize( { 17, 17 } );
     addItem( textButtonWithIcon, 1, 2 );
 }
