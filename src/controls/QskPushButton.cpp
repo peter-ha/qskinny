@@ -245,6 +245,19 @@ QRectF QskPushButton::layoutRectForSize( const QSizeF& size ) const
     return subControlContentsRect( size, Panel );
 }
 
+    const auto graphicsAlignment = flagHint< Qt::Alignment >(
+        QskPushButton::Graphic | QskAspect::Alignment, Qt::AlignTop );
+
+    switch( graphicsAlignment ) {
+        case Qt::AlignLeft:
+        {
+            const auto graphicsWidth = graphicSourceSize().width();
+            const auto spacing = metric( QskPushButton::Panel | QskAspect::Spacing );
+            size.setWidth( graphicsWidth + spacing + size.width() );
+            break;
+        }
+    }
+
 void QskPushButton::changeEvent( QEvent* event )
 {
     switch ( event->type() )
