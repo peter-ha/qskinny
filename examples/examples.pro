@@ -10,6 +10,7 @@ SUBDIRS += \
     messagebox \
     mycontrols \
     sliders \
+    stack-layout \
     thumbnails \
     tabview \
     vertical-layout
