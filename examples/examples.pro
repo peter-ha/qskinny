@@ -10,7 +10,8 @@ SUBDIRS += \
     mycontrols \
     sliders \
     thumbnails \
-    tabview
+    tabview \
+    vertical-layout
 
 qtHaveModule(svg) {
 
