@@ -3,6 +3,7 @@ TEMPLATE = subdirs
 # c++
 SUBDIRS += \
     desktop \
+    horizontal-layout \
     layouts \
     listbox \
     messagebox \
