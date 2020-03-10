@@ -9,6 +9,7 @@ SUBDIRS += \
     listbox \
     messagebox \
     mycontrols \
+    size-hints \
     size-policies \
     sliders \
     stack-layout \

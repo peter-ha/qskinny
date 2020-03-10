@@ -19,25 +19,17 @@ int main( int argc, char* argv[] )
     SkinnyFont::init( &app );
     SkinnyShortcut::enable( SkinnyShortcut::AllShortcuts );
 
-    auto horizontalBox = new QskLinearBox( Qt::Horizontal );
-    horizontalBox->setDefaultAlignment( Qt::AlignLeft );
-    horizontalBox->setMargins( 10 );
-    horizontalBox->setSpacing( 10 );
-
-    auto* label1 = new QskTextLabel( "size policy: fixed" );
-    label1->setSizePolicy( Qt::Horizontal, QskSizePolicy::Fixed );
+    auto* label1 = new QskTextLabel( "control 1" );
     label1->setMargins( 10 );
     label1->setBackgroundColor( Qt::magenta );
-    horizontalBox->addItem( label1 );
 
-    auto* label2 = new QskTextLabel( "size policy: preferred" );
-    label2->setSizePolicy( Qt::Horizontal, QskSizePolicy::Preferred );
-    label2->setMargins( 10 );
-    label2->setBackgroundColor( Qt::magenta );
-    horizontalBox->addItem( label2 );
+    // Toggle this for different size hints:
+//    label1->setExplicitSizeHint( Qt::PreferredSize, { 150, 60 } );
+
+    qDebug() << "size hint:" << label1->sizeHint() << ", the margins hereby are:" << label1->margins();
 
     QskWindow window;
-    window.addItem( horizontalBox );
+    window.addItem( label1 );
     window.show();
 
     return app.exec();
