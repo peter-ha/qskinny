@@ -9,6 +9,7 @@ SUBDIRS += \
     listbox \
     messagebox \
     mycontrols \
+    scene-graph-nodes \
     size-hints \
     size-policies \
     sliders \
