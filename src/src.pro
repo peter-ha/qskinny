@@ -144,6 +144,8 @@ HEADERS += \
     controls/QskSeparator.h \
     controls/QskSeparatorSkinlet.h \
     controls/QskSetup.h \
+    controls/QskShaderEffect.h \
+    controls/QskShaderEffectSkinlet.h \
     controls/QskShortcutMap.h \
     controls/QskSimpleListBox.h \
     controls/QskSkin.h \
@@ -212,6 +214,8 @@ SOURCES += \
     controls/QskSeparator.cpp \
     controls/QskSeparatorSkinlet.cpp \
     controls/QskSetup.cpp \
+    controls/QskShaderEffect.cpp \
+    controls/QskShaderEffectSkinlet.cpp \
     controls/QskShortcutMap.cpp \
     controls/QskSimpleListBox.cpp \
     controls/QskSkin.cpp \

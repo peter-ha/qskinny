@@ -7,6 +7,7 @@ SUBDIRS += \
     listbox \
     messagebox \
     mycontrols \
+    shadereffects \
     sliders \
     thumbnails \
     tabview
