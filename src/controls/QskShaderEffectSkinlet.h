@@ -3,6 +3,8 @@
 
 #include "QskSkinlet.h"
 
+#include <private/qquickopenglshadereffect_p.h>
+
 class QskShaderEffect;
 
 class QskShaderEffectSkinlet : public QskSkinlet
