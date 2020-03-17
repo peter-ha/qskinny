@@ -32,19 +32,11 @@ QSGNode* QskShaderEffectSkinlet::updateSubNode(
 
 QSGNode* QskShaderEffectSkinlet::updateShaderNode( const QskShaderEffect* shaderEffect, QSGNode* node ) const
 {
-//    QQuickOpenGLShaderEffectNode* shaderNode = static_cast< QQuickOpenGLShaderEffectNode* >( node );
-    QSGGeometryNode* shaderNode = static_cast< QSGGeometryNode* >( node );
+    QQuickOpenGLShaderEffectNode* shaderNode = static_cast< QQuickOpenGLShaderEffectNode* >( node );
 
     if( !shaderNode )
     {
-//        shaderNode = new QQuickOpenGLShaderEffectNode;
-        shaderNode = new QSGGeometryNode;
-
-        QSGFlatColorMaterial *material = new QSGFlatColorMaterial;
-        material->setColor( Qt::cyan );
-//        shaderNode->setMaterial( new QQuickOpenGLShaderEffectMaterial( shaderNode ) );
-        shaderNode->setMaterial( material );
-        shaderNode->setFlag( QSGNode::OwnsMaterial, true );
+        shaderNode = new QQuickOpenGLShaderEffectNode;
 
         QSGGeometry *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), 2);
         geometry->setDrawingMode(GL_LINES);
@@ -55,11 +47,31 @@ QSGNode* QskShaderEffectSkinlet::updateShaderNode( const QskShaderEffect* shader
         shaderNode->setGeometry( geometry );
         shaderNode->setFlag( QSGNode::OwnsGeometry, true );
 
-//        QObject::connect(shaderNode, &QQuickOpenGLShaderEffectNode::logAndStatusChanged,
-//                []( const QString& log, int status ) {
-//            qDebug() << "log and status changed" << log << status;
-//        });
-        // ### other stuff that shader effect is doing
+        auto* material = new QQuickOpenGLShaderEffectMaterial( shaderNode );
+
+        QQuickOpenGLShaderEffectMaterialKey source;
+        source.sourceCode[QQuickOpenGLShaderEffectMaterialKey::VertexShader] = "uniform highp mat4 qt_Matrix;\n"
+            "attribute highp vec4 qt_Vertex;\n"
+            "attribute highp vec2 qt_MultiTexCoord0;\n"
+            "varying highp vec2 coord;\n"
+            "void main() {\n"
+            "    coord = qt_MultiTexCoord0;\n"
+            "    gl_Position = qt_Matrix * qt_Vertex;\n"
+            "}\n";
+        source.sourceCode[QQuickOpenGLShaderEffectMaterialKey::FragmentShader] = "varying highp vec2 coord;\n"
+            "uniform sampler2D src;\n"
+            "uniform lowp float qt_Opacity;\n"
+            "void main() {\n"
+            "    lowp vec4 tex = texture2D(src, coord);\n"
+            "    gl_FragColor = vec4(vec3(dot(tex.rgb,\n"
+            "                        vec3(0.344, 0.5, 0.156))),\n"
+            "                             tex.a) * qt_Opacity;\n"
+            "}\n";
+        material->setProgramSource( source );
+
+        shaderNode->setMaterial( material );
+        shaderNode->setFlag( QSGNode::OwnsMaterial, true );
+        shaderNode->markDirty( QSGNode::DirtyMaterial );
     }
 
     qDebug() << "@@@" << static_cast<QSGGeometryNode*>( shaderNode );
