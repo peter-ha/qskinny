@@ -14,6 +14,7 @@ SUBDIRS += \
     size-policies \
     sliders \
     stack-layout \
+    stretch-factors \
     thumbnails \
     tabview \
     vertical-layout
