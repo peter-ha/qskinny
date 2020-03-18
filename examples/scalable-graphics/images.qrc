@@ -1,0 +1,8 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource>
+		<file>qvg/cloud.qvg</file>
+		<file>qvg/train.qvg</file>
+    </qresource>
+</RCC>
+

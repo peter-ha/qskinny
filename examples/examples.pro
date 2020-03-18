@@ -9,6 +9,7 @@ SUBDIRS += \
     listbox \
     messagebox \
     mycontrols \
+    scalable-graphics \
     scene-graph-nodes \
     size-hints \
     size-policies \
