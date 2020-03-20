@@ -2,6 +2,7 @@ TEMPLATE = subdirs
 
 # c++
 SUBDIRS += \
+    compositing-controls \
     desktop \
     grid-layout \
     horizontal-layout \
