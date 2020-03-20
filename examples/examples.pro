@@ -3,6 +3,7 @@ TEMPLATE = subdirs
 # c++
 SUBDIRS += \
     compositing-controls \
+    control-with-skinlet \
     desktop \
     grid-layout \
     horizontal-layout \
