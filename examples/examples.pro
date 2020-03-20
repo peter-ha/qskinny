@@ -16,6 +16,7 @@ SUBDIRS += \
     sliders \
     stack-layout \
     stretch-factors \
+    subclassing-existing-control \
     thumbnails \
     tabview \
     vertical-layout
