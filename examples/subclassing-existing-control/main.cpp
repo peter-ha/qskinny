@@ -7,41 +7,91 @@
 #include <SkinnyShortcut.h>
 
 #include <QskLinearBox.h>
+#include <QskMargins.h>
+#include <QskSetup.h>
+#include <QskSkin.h>
+#include <QskSkinFactory.h>
+#include <QskSkinManager.h>
 #include <QskTextLabel.h>
 #include <QskWindow.h>
 
 #include <QGuiApplication>
 
+class TextLabel : public QskTextLabel
+{
+
+    Q_OBJECT
+
+public:
+    QSK_SUBCONTROLS( Panel )
+
+    TextLabel( const QString& text, QQuickItem* parent = nullptr ) : QskTextLabel( text, parent )
+    {
+        setPanel( true );
+
+        // for simple example comment in:
+//        setMargins( 15 );
+//        setBackgroundColor( Qt::cyan );
+    }
+
+    QskAspect::Subcontrol effectiveSubcontrol( QskAspect::Subcontrol subControl ) const override final
+    {
+        if ( subControl == QskTextLabel::Panel )
+            return TextLabel::Panel;
+
+        return subControl;
+    }
+};
+
+QSK_SUBCONTROL( TextLabel, Panel )
+
+class MySkin : public QskSkin
+{
+
+public:
+    MySkin( QObject* parent = nullptr ) : QskSkin( parent )
+    {
+        setGradient( TextLabel::Panel, Qt::cyan );
+        setMargins( TextLabel::Panel | QskAspect::Padding, 15 );
+    }
+};
+
+class MySkinFactory : public QskSkinFactory
+{
+
+    Q_OBJECT
+
+public:
+    QStringList skinNames() const override
+    {
+        return { "MySkin" };
+    }
+
+    QskSkin* createSkin( const QString& /*skinName*/ ) override
+    {
+        return new MySkin();
+    }
+};
+
 int main( int argc, char* argv[] )
 {
+    auto skinFactory = new MySkinFactory();
+    qskSkinManager->registerFactory( QStringLiteral( "MySkinFactory" ), skinFactory );
+
     QGuiApplication app( argc, argv );
+
+    qskSetup->setSkin( QStringLiteral( "MySkin" ) );
 
     SkinnyFont::init( &app );
     SkinnyShortcut::enable( SkinnyShortcut::AllShortcuts );
 
-    auto horizontalBox = new QskLinearBox( Qt::Horizontal );
-    horizontalBox->setDefaultAlignment( Qt::AlignLeft );
-    horizontalBox->setMargins( 10 );
-    horizontalBox->setSpacing( 10 );
-
-    auto* label1 = new QskTextLabel( "control 1" );
-    label1->setMargins( 10 );
-    label1->setBackgroundColor( Qt::magenta );
-    horizontalBox->addItem( label1 );
-
-    auto* label2 = new QskTextLabel( "control 2" );
-    label2->setMargins( 10 );
-    label2->setBackgroundColor( Qt::magenta );
-    horizontalBox->addItem( label2 );
-
-    auto* label3 = new QskTextLabel( "control 3" );
-    label3->setMargins( 10 );
-    label3->setBackgroundColor( Qt::magenta );
-    horizontalBox->addItem( label3 );
+    auto* customLabel = new TextLabel( "control 1" );
 
     QskWindow window;
-    window.addItem( horizontalBox );
+    window.addItem( customLabel );
     window.show();
 
     return app.exec();
 }
+
+#include "main.moc"
