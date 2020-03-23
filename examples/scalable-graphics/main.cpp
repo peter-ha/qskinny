@@ -26,14 +26,18 @@ int main( int argc, char* argv[] )
     horizontalBox->setSpacing( 10 );
     horizontalBox->setPreferredSize( { 200, 75 } );
 
-    QskGraphic graphic1 = QskGraphicIO::read( QStringLiteral( ":/qvg/cloud.qvg" ) );
+    QImage image1( ":/images/cloud.svg" );
+    QskGraphic graphic1 = QskGraphic::fromImage( image1 );
     auto* label1 = new QskGraphicLabel( graphic1, horizontalBox );
+    label1->setSizePolicy( QskSizePolicy::ConstrainedPreferred, QskSizePolicy::Expanding );
     label1->setAlignment( Qt::AlignCenter );
     label1->setMargins( 10 );
     label1->setBackgroundColor( Qt::magenta );
 
-    QskGraphic graphic2 = QskGraphicIO::read( QStringLiteral( ":/qvg/train.qvg" ) );
+    QImage image2( ":/images/train.svg" );
+    QskGraphic graphic2 = QskGraphic::fromImage( image2 );
     auto* label2 = new QskGraphicLabel( graphic2, horizontalBox );
+    label2->setSizePolicy( QskSizePolicy::ConstrainedPreferred, QskSizePolicy::Expanding );
     label2->setAlignment( Qt::AlignCenter );
     label2->setMargins( 10 );
     label2->setBackgroundColor( Qt::magenta );
