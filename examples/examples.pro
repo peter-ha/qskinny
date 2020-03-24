@@ -11,6 +11,7 @@ SUBDIRS += \
     listbox \
     messagebox \
     mycontrols \
+    nesting-layouts \
     scalable-graphics \
     scene-graph-nodes \
     size-hints \
