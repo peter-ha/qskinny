@@ -24,20 +24,7 @@ public:
     MySkin( QObject* parent = nullptr ) : QskSkin( parent )
     {
        setGradient( QskPushButton::Panel, Qt::magenta );
-       setGradient( QskPushButton::Panel | QskPushButton::Pressed, Qt::yellow );
-       setAnimation( QskPushButton::Panel | QskAspect::Color, 1000 );
-    }
-};
-
-// actually, we don't need the other skin at all
-class OtherSkin : public QskSkin
-{
-
-public:
-    OtherSkin( QObject* parent = nullptr ) : QskSkin( parent )
-    {
-       setGradient( QskPushButton::Panel, Qt::cyan );
-       setGradient( QskPushButton::Panel | QskPushButton::Pressed, Qt::green );
+       setGradient( QskPushButton::Panel | QskPushButton::Hovered, Qt::cyan );
        setAnimation( QskPushButton::Panel | QskAspect::Color, 1000 );
     }
 };
@@ -50,37 +37,31 @@ class MySkinFactory : public QskSkinFactory
 public:
     QStringList skinNames() const override
     {
-        return { "MySkin", "OtherSkin" };
+        return { "MySkin" };
     }
 
-    QskSkin* createSkin( const QString& skinName ) override
+    QskSkin* createSkin( const QString& /*skinName*/ ) override
     {
-        if( skinName == "MySkin" )
-            return new MySkin;
-
-        else if( skinName == "OtherSkin" )
-            return new OtherSkin;
-
-        return nullptr;
+        return new MySkin;
     }
 };
 
 int main( int argc, char* argv[] )
 {
-    auto skinFactory = new MySkinFactory();
+    auto* skinFactory = new MySkinFactory;
     qskSkinManager->setPluginPaths( QStringList() ); // no default plugins
 
-    qskSkinManager->registerFactory( QStringLiteral( "MySkinFactory" ), skinFactory );
+    qskSkinManager->registerFactory( "MySkinFactory", skinFactory );
 
     QGuiApplication app( argc, argv );
 
-    qskSetup->setSkin( QStringLiteral( "MySkin" ) );
+    qskSetup->setSkin( "MySkin" );
 
     SkinnyFont::init( &app );
     SkinnyShortcut::enable( SkinnyShortcut::AllShortcuts );
 
     auto* button = new QskPushButton( "button" );
-    button->setExplicitSizeHint( Qt::PreferredSize, { 100, 50 } );
+    button->setMarginsHint( QskPushButton::Panel | QskAspect::Padding, 15 );
 
     QskWindow window;
     window.addItem( button );
