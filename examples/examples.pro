@@ -20,6 +20,7 @@ SUBDIRS += \
     stack-layout \
     stretch-factors \
     subclassing-existing-control \
+    switching-skinlets \
     thumbnails \
     tabview \
     vertical-layout
