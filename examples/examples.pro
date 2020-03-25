@@ -2,6 +2,7 @@ TEMPLATE = subdirs
 
 # c++
 SUBDIRS += \
+    animations \
     compositing-controls \
     control-with-skinlet \
     desktop \
