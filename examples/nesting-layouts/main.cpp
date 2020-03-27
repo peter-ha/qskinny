@@ -26,6 +26,8 @@ int main( int argc, char* argv[] )
 
     auto* topBar = new QskLinearBox( Qt::Horizontal, outerBox );
     topBar->setSpacing( 10 );
+    // toggle this line for the item tree documentation:
+//    topBar->setOpacity( 0.2 );
 
     auto* topLabel1 = new QskTextLabel( "top bar label 1", topBar );
     topLabel1->setMargins( 10 );
@@ -59,9 +61,19 @@ int main( int argc, char* argv[] )
     auto* mainText = new QskTextLabel( "here main area", mainBox );
     mainText->setSizePolicy( Qt::Horizontal, QskSizePolicy::Expanding );
 
+    // uncomment the stuff below for the item tree example:
+//    auto* bottomBar = new QskLinearBox( Qt::Horizontal, outerBox );
+//    bottomBar->setSpacing( 10 );
+//    topLabel1->setParentItem( bottomBar );
+////    topLabel1->setParent( bottomBar );
+//    topBar->deleteLater();
+
     QskWindow window;
     window.addItem( outerBox );
     window.show();
+
+    // uncomment to dump object tree:
+//    window.dumpObjectTree();
 
     return app.exec();
 }
