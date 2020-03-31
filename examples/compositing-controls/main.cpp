@@ -31,9 +31,10 @@ public:
 
         addItem( m_textLabel );
 
-        auto graphic = QskGraphicIO::read( QString( ":/qvg/%1.qvg" ).arg( graphicName ) );
+        QImage image( QString( ":/images/%1.svg" ).arg( graphicName ) );
+        auto graphic = QskGraphic::fromImage( image );
         m_graphicLabel = new QskGraphicLabel( graphic, this );
-        m_graphicLabel->setExplicitSizeHint( Qt::PreferredSize, { 30, 20 } );
+        m_graphicLabel->setExplicitSizeHint( Qt::PreferredSize, { 30, 30 } );
         addItem( m_graphicLabel );
 
         setAutoLayoutChildren( true );
