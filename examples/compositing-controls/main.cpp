@@ -33,7 +33,7 @@ public:
 
         QImage image( QString( ":/images/%1.svg" ).arg( graphicName ) );
         auto graphic = QskGraphic::fromImage( image );
-        m_graphicLabel = new QskGraphicLabel( graphic, this );
+        m_graphicLabel = new QskGraphicLabel( graphic );
         m_graphicLabel->setExplicitSizeHint( Qt::PreferredSize, { 30, 30 } );
         addItem( m_graphicLabel );
 

@@ -75,7 +75,7 @@ public:
 protected:
     QSGNode* updateSubNode( const QskSkinnable* skinnable, quint8 nodeRole, QSGNode* node ) const override
     {
-        const auto customShape = static_cast< const CustomShape* >( skinnable );
+        const auto* customShape = static_cast< const CustomShape* >( skinnable );
 
         switch ( nodeRole )
         {
