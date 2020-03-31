@@ -23,9 +23,11 @@ class MySkin : public QskSkin
 public:
     MySkin( QObject* parent = nullptr ) : QskSkin( parent )
     {
-       setGradient( QskPushButton::Panel, Qt::magenta );
-       setGradient( QskPushButton::Panel | QskPushButton::Hovered, Qt::cyan );
-       setAnimation( QskPushButton::Panel | QskAspect::Color, 1000 );
+        setGradient( QskPushButton::Panel, Qt::magenta );
+        setMargins( QskPushButton::Panel | QskAspect::Padding, 10 );
+        setColor( QskPushButton::Text, Qt::black );
+        setGradient( QskPushButton::Panel | QskPushButton::Hovered, Qt::cyan );
+        setAnimation( QskPushButton::Panel | QskAspect::Color, 1000 );
     }
 };
 
