@@ -17,6 +17,7 @@ SUBDIRS += \
     scene-graph-nodes \
     size-hints \
     size-policies \
+    skin-factory \
     sliders \
     stack-layout \
     stretch-factors \
