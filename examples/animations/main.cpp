@@ -63,7 +63,6 @@ int main( int argc, char* argv[] )
     SkinnyShortcut::enable( SkinnyShortcut::AllShortcuts );
 
     auto* button = new QskPushButton( "button" );
-    button->setMarginsHint( QskPushButton::Panel | QskAspect::Padding, 15 );
 
     QskWindow window;
     window.addItem( button );

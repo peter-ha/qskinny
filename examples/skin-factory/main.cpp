@@ -10,11 +10,11 @@
 #include <QskBoxBorderMetrics.h>
 #include <QskLinearBox.h>
 #include <QskMargins.h>
+#include <QskPushButton.h>
 #include <QskSetup.h>
 #include <QskSkin.h>
 #include <QskSkinFactory.h>
 #include <QskSkinManager.h>
-#include <QskTextLabel.h>
 #include <QskWindow.h>
 
 #include <QGuiApplication>
@@ -25,8 +25,9 @@ class MySkin : public QskSkin
 public:
     MySkin( QObject* parent = nullptr ) : QskSkin( parent )
     {
-        setGradient( QskTextLabel::Panel, Qt::magenta );
-        setMargins( QskTextLabel::Panel | QskAspect::Padding, 10 );
+        setGradient( QskPushButton::Panel, Qt::magenta );
+        setMargins( QskPushButton::Panel | QskAspect::Padding, 10 );
+        setColor( QskPushButton::Text, Qt::black );
     }
 };
 
@@ -36,10 +37,10 @@ class OtherSkin : public QskSkin
 public:
     OtherSkin( QObject* parent = nullptr ) : QskSkin( parent )
     {
-        setGradient( QskTextLabel::Panel, Qt::cyan );
-        setMargins( QskTextLabel::Panel | QskAspect::Padding, 15 );
-        setBoxBorderColors( QskTextLabel::Panel, Qt::blue );
-        setBoxBorderMetrics( QskTextLabel::Panel, 1 );
+        setGradient( QskPushButton::Panel, Qt::cyan );
+        setMargins( QskPushButton::Panel | QskAspect::Padding, 15 );
+        setBoxBorderColors( QskPushButton::Panel, Qt::blue );
+        setBoxBorderMetrics( QskPushButton::Panel, 1 );
     }
 };
 
@@ -74,16 +75,15 @@ int main( int argc, char* argv[] )
 
     QGuiApplication app( argc, argv );
 
-    qskSetup->setSkin( "MySkin" );
+    qskSetup->setSkin( "OtherSkin" );
 
     SkinnyFont::init( &app );
     SkinnyShortcut::enable( SkinnyShortcut::AllShortcuts );
 
-    auto* label = new QskTextLabel( "label" );
-    label->setPanel( true );
+    auto* button = new QskPushButton( "button" );
 
     QskWindow window;
-    window.addItem( label );
+    window.addItem( button );
     window.show();
 
     return app.exec();
