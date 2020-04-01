@@ -2,30 +2,33 @@ TEMPLATE = subdirs
 
 # c++
 SUBDIRS += \
-    animations \
-    compositing-controls \
-    control-with-skinlet \
     desktop \
-    grid-layout \
-    horizontal-layout \
     layouts \
     listbox \
     messagebox \
     mycontrols \
-    nesting-layouts \
-    scalable-graphics \
-    scene-graph-nodes \
-    size-hints \
-    size-policies \
-    skin-factory \
     sliders \
-    stack-layout \
-    stretch-factors \
-    subclassing-existing-control \
-    switching-skinlets \
     thumbnails \
-    tabview \
-    vertical-layout
+    tabview
+
+SUBDIRS += \
+    documentation/animations \
+    documentation/compositing-controls \
+    documentation/control-with-skinlet \
+    documentation/grid-layout \
+    documentation/horizontal-layout \
+    documentation/nesting-layouts \
+    documentation/scalable-graphics \
+    documentation/scene-graph-nodes \
+    documentation/size-hints \
+    documentation/size-policies \
+    documentation/skin-factory \
+    documentation/stack-layout \
+    documentation/stretch-factors \
+    documentation/subclassing-existing-control \
+    documentation/switching-skinlets \
+    documentation/vertical-layout
+
 
 qtHaveModule(svg) {
 
