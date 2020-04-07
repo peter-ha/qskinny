@@ -1,0 +1,40 @@
+#include($QT_INSTALL_DOCS/global/qt-module-defaults.qdocconf)
+
+project                 = QSkinny
+description             = QSkinny API documentation
+version                 = 1.0.0
+url                     = https://github.com/uwerat/qskinny
+examplesinstallpath     = qskinny
+
+moduleheader            = QSkinnyDoc
+includepaths            = -I .
+
+qhp.projects    = QSkinny
+qhp.QtGui.file  = qskinny.qhp
+
+qhp.QtGui.namespace           = qskinny.1.0.0
+qhp.QtGui.virtualFolder       = qskinny
+qhp.QtGui.indexTitle          = QSkinny
+qhp.QtGui.indexRoot           =
+qhp.QtGui.filterAttributes    = qskinny 1.0.0 qtrefdoc
+qhp.QtGui.customFilters.Qt.name = QSkinny 1.0.0
+qhp.QtGui.customFilters.Qt.filterAttributes = qskinny 1.0.0
+
+qhp.QtGui.subprojects         = classes
+qhp.QtGui.subprojects.classes.title = C++ Classes
+qhp.QtGui.subprojects.classes.indexTitle = QSkinny C++ Classes
+qhp.QtGui.subprojects.classes.selectors = class fake:headerfile
+tagfile                 = qskinny.tags
+
+#depends += \
+#   qtcore \
+#   qtopengl \
+#   qtsvg \
+#   qtqml \
+#   qtquick \
+#   qtdoc
+
+headerdirs  += ../src/layouts
+sourcedirs += ../src/layouts
+outputdir = qdoc-output
+outputformats = HTML

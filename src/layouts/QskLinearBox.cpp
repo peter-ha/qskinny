@@ -377,6 +377,13 @@ int QskLinearBox::addItem( QQuickItem* item, Qt::Alignment alignment )
     return insertItem( -1, item, alignment );
 }
 
+/*! \fn int QskLinearBox::addItem( QQuickItem* item ) const
+
+    Adds \a item to this linear box.
+
+    \sa insertItem()
+*/
+
 int QskLinearBox::addItem( QQuickItem* item )
 {
     return insertItem( -1, item );
