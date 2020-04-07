@@ -8,6 +8,11 @@
 
 #include "QskIndexedLayoutBox.h"
 
+//!  A linear layout box.
+/*!
+    This is the description for a linear layout box.
+*/
+
 class QSK_EXPORT QskLinearBox : public QskIndexedLayoutBox
 {
     Q_OBJECT
@@ -70,6 +75,13 @@ class QSK_EXPORT QskLinearBox : public QskIndexedLayoutBox
     void resetSpacing();
     qreal spacing() const;
 
+    //! Adds an item to this box.
+    /*!
+     * Adds an item to this linear box; this call will make the item a child of the box,
+     * in case it does not have one yet.
+     *
+     * \param item The item to be added.
+     */
     Q_INVOKABLE int addItem( QQuickItem* );
     int addItem( QQuickItem*, Qt::Alignment );
 
