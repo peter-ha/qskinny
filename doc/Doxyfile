@@ -252,6 +252,8 @@ TAB_SIZE               = 4
 # a double escape (\\{ and \\})
 
 ALIASES                = "accessors=\par Access functions:\n"
+ALIASES += qmltype{1}="\par This class is exposed to QML as '\1'."
+
 
 # This tag can be used to specify a number of word-keyword mappings (TCL only).
 # A mapping has the form "name=value". For example adding "class=itcl::class"

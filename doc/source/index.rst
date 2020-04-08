@@ -19,7 +19,9 @@ QSkinny documentation
     * :ref:`modindex`
     * :ref:`search`
 
-.. doxygenindex::
+.. .. doxygenindex::
+
+.. breathe-apidoc/classlist.rst
 
 C++ documentation
 =================

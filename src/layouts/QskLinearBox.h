@@ -9,6 +9,7 @@
 #include "QskIndexedLayoutBox.h"
 
 //!  A linear layout box.
+//! \qmltype{Qsk.LinearBox}
 /*!
     This is the description for a linear layout box.
 */
