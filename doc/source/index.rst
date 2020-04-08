@@ -19,6 +19,8 @@ QSkinny documentation
     * :ref:`modindex`
     * :ref:`search`
 
+.. doxygenindex::
+
 C++ documentation
 =================
 .. doxygenclass:: QskLinearBox
