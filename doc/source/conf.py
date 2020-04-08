@@ -42,7 +42,8 @@ extensions = ["breathe"]
 
 breathe_default_project = "QSkinny"
 breathe_projects = {'QSkinny': '../xml'}
-breathe_default_members = ('members', 'undoc-members')
+#breathe_default_members = ('members', 'undoc-members')
+breathe_default_members = ('members',)
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

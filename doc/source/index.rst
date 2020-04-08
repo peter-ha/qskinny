@@ -27,3 +27,9 @@ C++ documentation
 =================
 .. doxygenclass:: QskLinearBox
    :members:
+
+
+QML documentation
+=================
+.. doxygenclass:: QskLinearBox
+   :qml-members:

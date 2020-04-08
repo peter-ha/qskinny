@@ -9,15 +9,17 @@
 #include "QskIndexedLayoutBox.h"
 
 //!  A linear layout box.
-//! \qmltype{Qsk.LinearBox}
 /*!
     This is the description for a linear layout box.
+
+    Here add some more content, and also distinguish between C++ and QML.
 */
 
 class QSK_EXPORT QskLinearBox : public QskIndexedLayoutBox
 {
     Q_OBJECT
 
+    //! The orientation of this property
     Q_PROPERTY( Qt::Orientation orientation READ orientation
         WRITE setOrientation NOTIFY orientationChanged FINAL )
 
@@ -76,19 +78,21 @@ class QSK_EXPORT QskLinearBox : public QskIndexedLayoutBox
     void resetSpacing();
     qreal spacing() const;
 
-    //! Adds an item to this box.
+    Q_INVOKABLE int addItem( QQuickItem* );
+
+    //! Adds an item to this box with an alignment.
     /*!
-     * Adds an item to this linear box; this call will make the item a child of the box,
-     * in case it does not have one yet.
+     *  Here goes a more specific description.
      *
      * \param item The item to be added.
+     * \param alignment The alignment of the item.
      */
-    Q_INVOKABLE int addItem( QQuickItem* );
     int addItem( QQuickItem*, Qt::Alignment );
 
     Q_INVOKABLE int insertItem( int index, QQuickItem* );
     int insertItem( int index, QQuickItem*, Qt::Alignment );
 
+    //! This is an invokable method
     Q_INVOKABLE int addSpacer( qreal spacing, int stretchFactor = 0 );
     Q_INVOKABLE int insertSpacer( int index, qreal spacing, int stretchFactor = 0 );
 
@@ -104,6 +108,7 @@ class QSK_EXPORT QskLinearBox : public QskIndexedLayoutBox
     void dump();
 
   public Q_SLOTS:
+    //! Transposes the element.
     void transpose();
     void activate();
     void invalidate();
