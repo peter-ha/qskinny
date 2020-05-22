@@ -3,6 +3,7 @@ TEMPLATE = subdirs
 # c++
 SUBDIRS += \
     desktop \
+    iot-dashboard \
     layouts \
     listbox \
     messagebox \
