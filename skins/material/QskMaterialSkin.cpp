@@ -88,7 +88,7 @@ void Editor::setupPushButton()
 //    setMetric( Q::Panel | MaximumHeight, qskDpiScaled( 36.0 ) );
 
 
-    const QskMargins padding( 16, 0 ); // ### vertical padding?
+    const QskMargins padding( 16, 9 ); // ### vertical padding?
 
     setPadding( Q::Panel, padding ); // ### remove, use text and graphics margins instead
 //    setMargins( Q::Text | Padding, 16 );
