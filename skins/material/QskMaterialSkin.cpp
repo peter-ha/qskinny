@@ -106,7 +106,7 @@ void Editor::setupPushButton()
     setBoxBorderColors(Q::Panel | Q::Flat, { m_pal.baseColor } );
 
     // graphics for buttons:
-    setAlignment(Q::Graphic | A::Alignment, Qt::AlignLeft );
+    setAlignment( Q::Graphic | A::Alignment, Qt::AlignLeft );
     setMetric( QskPushButton::Panel | QskAspect::Spacing, 3 );
     setPadding(Q::Graphic, { 13, 0, 8, 0 } );
 

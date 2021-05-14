@@ -113,7 +113,7 @@ QRectF QskPushButtonSkinlet::graphicRect(
     switch( alignment ) {
         case Qt::AlignLeft:
         {
-            const auto padding = button->marginHint( QskPushButton::Graphic | QskAspect::Padding );
+            const auto padding = button->paddingHint( QskPushButton::Graphic );
             // ### Hack: we let the graphics padding supersede the panel padding in case they are different
             r.setX( padding.left() );
             break;
@@ -255,10 +255,24 @@ QSizeF QskPushButtonSkinlet::sizeHint( const QskSkinnable* skinnable,
             }
         }
 
-        const qreal padding = 2.0; // paddingHint( Graphic ) ???
+        const auto alignment = button->flagHint< Qt::Alignment >(
+            QskPushButton::Graphic | QskAspect::Alignment, Qt::AlignTop );
 
-        size.rheight() += 2 * padding + h;
-        size.rwidth() = qMax( size.width(), w );
+        const auto padding = button->paddingHint( QskPushButton::Graphic );
+
+        switch(alignment) {
+        case Qt::AlignLeft: {
+            size.rwidth() += padding.left() + w + padding.right();
+            qDebug() << "@@@ w:" << padding.left() << w << padding.right();
+            size.rheight() = qMax( size.height(), h );
+            break;
+        }
+        default: // AlignTop
+            const qreal padding = 2.0; // paddingHint( Graphic ) ???
+
+            size.rheight() += 2 * padding + h;
+            size.rwidth() = qMax( size.width(), w );
+        }
     }
 
     size = size.expandedTo( button->strutSizeHint( QskPushButton::Panel ) );
