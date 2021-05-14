@@ -86,7 +86,7 @@ QRectF QskPushButtonSkinlet::textRect(
                 const auto spacing = button->metric( QskPushButton::Panel | QskAspect::Spacing );
                 r.setX( r.x() + graphicsRect.width() + spacing );
                 // ### Why is this necessary? The right edge shouldn't be changed...
-                r.setWidth( r.width() + graphicsRect.width() - button->marginsHint( QskPushButton::Graphic | QskAspect::Padding ).left() );
+                r.setWidth( r.width() + graphicsRect.width() - button->marginHint( QskPushButton::Graphic | QskAspect::Padding ).left() );
                 break;
             }
             default: { // Top
@@ -113,7 +113,7 @@ QRectF QskPushButtonSkinlet::graphicRect(
     switch( alignment ) {
         case Qt::AlignLeft:
         {
-            const auto padding = button->marginsHint( QskPushButton::Graphic | QskAspect::Padding );
+            const auto padding = button->marginHint( QskPushButton::Graphic | QskAspect::Padding );
             // ### Hack: we let the graphics padding supersede the panel padding in case they are different
             r.setX( padding.left() );
             break;
