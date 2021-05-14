@@ -84,15 +84,10 @@ void Editor::setupPushButton()
     using Q = QskPushButton;
     using M = QskMaterialSkin;
 
-    // ### how to set maximum height?
-//    setMetric( Q::Panel | MaximumHeight, qskDpiScaled( 36.0 ) );
-
-
-//    const QskMargins padding( 17, 9 );
-    const QskMargins padding( 0, 0 );
-
-    setPadding( Q::Panel, padding ); // ### remove, use text and graphics margins instead
-//    setMargins( Q::Text | Padding, 16 );
+    // The left padding depends on whether there is an icon or not,
+    // so we distribute the pixels to the text, icon and panel:
+    setPadding( Q::Panel, {8, 0, 0, 0} );
+    setPadding( Q::Text, {8, 0, 0, 0} );
 
     setGradient( Q::Panel, { "#6200EE" } );
     setGradient( Q::Panel | Q::Flat, Qt::white );
@@ -102,7 +97,7 @@ void Editor::setupPushButton()
     setFontRole( Q::Text, QskSkin::MediumFont );
     setAlignment( Q::Text, Qt::AlignCenter );
     setBoxShape( Q::Panel, 4 );
-    setPadding(Q::Text, 0);
+//    setPadding(Q::Text, 0);
     setSpacing(Q::Panel, 0);
 
     setStrutSize( Q::Panel, {64, 36} );

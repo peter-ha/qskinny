@@ -74,18 +74,20 @@ QRectF QskPushButtonSkinlet::textRect(
     // buttonShift -> TODO
 
     auto r = button->subControlContentsRect( contentsRect, QskPushButton::Panel );
+    const QMarginsF padding = button->paddingHint( QskPushButton::Text );
+    r = r.marginsRemoved( padding );
 
     if ( button->hasGraphic() )
     {
         const auto alignment = button->flagHint< Qt::Alignment >(
             QskPushButton::Graphic | QskAspect::Alignment, Qt::AlignTop );
 
-        const QFontMetricsF fm( button->effectiveFont( QskPushButton::Text ) );
-
         switch( alignment ) {
             case Qt::AlignLeft: {
                 const auto graphicsRect = subControlRect( button, contentsRect, QskPushButton::Graphic );
-                r.setX( graphicsRect.right() );
+
+                qDebug() << "padding:" << padding.left();
+                r.setX( graphicsRect.right() + padding.left() );
                 break;
             }
             default: { // Top
@@ -262,7 +264,6 @@ QSizeF QskPushButtonSkinlet::sizeHint( const QskSkinnable* skinnable,
         switch(alignment) {
         case Qt::AlignLeft: {
             size.rwidth() += padding.left() + w + padding.right();
-            qDebug() << "@@@ w:" << padding.left() << w << padding.right();
             size.rheight() = qMax( size.height(), h );
             break;
         }
