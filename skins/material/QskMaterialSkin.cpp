@@ -88,7 +88,8 @@ void Editor::setupPushButton()
 //    setMetric( Q::Panel | MaximumHeight, qskDpiScaled( 36.0 ) );
 
 
-    const QskMargins padding( 16, 9 ); // ### vertical padding?
+//    const QskMargins padding( 17, 9 );
+    const QskMargins padding( 0, 0 );
 
     setPadding( Q::Panel, padding ); // ### remove, use text and graphics margins instead
 //    setMargins( Q::Text | Padding, 16 );
@@ -101,14 +102,18 @@ void Editor::setupPushButton()
     setFontRole( Q::Text, QskSkin::MediumFont );
     setAlignment( Q::Text, Qt::AlignCenter );
     setBoxShape( Q::Panel, 4 );
+    setPadding(Q::Text, 0);
+    setSpacing(Q::Panel, 0);
+
+    setStrutSize( Q::Panel, {64, 36} );
 
     // for outlined buttons:
     setBoxBorderColors(Q::Panel | Q::Flat, { m_pal.baseColor } );
 
     // graphics for buttons:
     setAlignment( Q::Graphic | A::Alignment, Qt::AlignLeft );
-    setMetric( QskPushButton::Panel | QskAspect::Spacing, 3 );
-    setPadding(Q::Graphic, { 13, 0, 8, 0 } );
+    setPadding(Q::Graphic, 0);
+//    setPadding(Q::Graphic, { 13, 0, 8, 0 } );
 
     setGraphicRole( Q::Graphic, M::GraphicRoleContained );
 

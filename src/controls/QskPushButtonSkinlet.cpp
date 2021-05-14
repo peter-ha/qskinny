@@ -80,13 +80,12 @@ QRectF QskPushButtonSkinlet::textRect(
         const auto alignment = button->flagHint< Qt::Alignment >(
             QskPushButton::Graphic | QskAspect::Alignment, Qt::AlignTop );
 
+        const QFontMetricsF fm( button->effectiveFont( QskPushButton::Text ) );
+
         switch( alignment ) {
             case Qt::AlignLeft: {
                 const auto graphicsRect = subControlRect( button, contentsRect, QskPushButton::Graphic );
-                const auto spacing = button->metric( QskPushButton::Panel | QskAspect::Spacing );
-                r.setX( r.x() + graphicsRect.width() + spacing );
-                // ### Why is this necessary? The right edge shouldn't be changed...
-                r.setWidth( r.width() + graphicsRect.width() - button->marginHint( QskPushButton::Graphic | QskAspect::Padding ).left() );
+                r.setX( graphicsRect.right() );
                 break;
             }
             default: { // Top
@@ -123,7 +122,7 @@ QRectF QskPushButtonSkinlet::graphicRect(
             if ( !button->text().isEmpty() )
             {
                 const auto textRect = subControlRect( button, contentsRect, QskPushButton::Text );
-        qreal h = textRect.height() + button->spacingHint( QskPushButton::Panel );
+                qreal h = textRect.height() + button->spacingHint( QskPushButton::Panel );
 
                 if ( h < r.height() )
                     r.setBottom( r.bottom() - h );
