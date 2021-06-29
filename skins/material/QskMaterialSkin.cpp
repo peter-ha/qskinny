@@ -59,8 +59,24 @@ namespace
 
 void Editor::setup()
 {
-    setupControl();
+    using A = QskAspect;
 
+    QskAspect c = A::Color;
+
+    setColor( c | A::PrimaryColor, { "#6200EE" } );
+    setColor( c | A::PrimaryVariantColor, { "#3700B3" } );
+    setColor( c | A::SecondaryColor, { "#03DAC6" } );
+    setColor( c | A::SecondaryVariantColor, { "#018786" } );
+    setColor( c | A::BackgroundColor, { "#FFFFFF" } );
+    setColor( c | A::SurfaceColor, { "#FFFFFF" } );
+    setColor( c | A::ErrorColor, { "#B00020" } );
+    setColor( c | A::OnPrimaryColor, { "#FFFFFF" } );
+    setColor( c | A::OnSecondaryColor, { "#000000" } );
+    setColor( c | A::OnBackgroundColor, { "#000000" } );
+    setColor( c | A::OnSurfaceColor, { "#000000" } );
+    setColor( c | A::OnErrorColor, { "#FFFFFF" } );
+
+    setupControl();
     setupPushButton();
 }
 
@@ -89,11 +105,13 @@ void Editor::setupPushButton()
     setPadding( Q::Panel, {8, 0, 0, 0} );
     setPadding( Q::Text, {8, 0, 0, 0} );
 
-    setGradient( Q::Panel, { "#6200EE" } );
-    setGradient( Q::Panel | Q::Flat, Qt::white );
+    QskAspect c = A::Color;
 
-    setColor( Q::Text, m_pal.textColor );
-    setColor( Q::Text | Q::Flat, m_pal.baseColor );
+    setGradient( Q::Panel, color( c | A::PrimaryColor ) );
+    setGradient( Q::Panel | Q::Flat, color( c | A::BackgroundColor ) );
+
+    setColor( Q::Text, color( c | A::OnPrimaryColor ) );
+    setColor( Q::Text | Q::Flat, color( c | A::PrimaryColor ) );
     setFontRole( Q::Text, QskSkin::MediumFont );
     setAlignment( Q::Text, Qt::AlignCenter );
     setBoxShape( Q::Panel, 4 );
@@ -103,7 +121,7 @@ void Editor::setupPushButton()
     setStrutSize( Q::Panel, {64, 36} );
 
     // for outlined buttons:
-    setBoxBorderColors(Q::Panel | Q::Flat, { m_pal.baseColor } );
+    setBoxBorderColors(Q::Panel | Q::Flat, { color( c | A::PrimaryColor ) } );
 
     // graphics for buttons:
     setAlignment( Q::Graphic | A::Alignment, Qt::AlignLeft );
